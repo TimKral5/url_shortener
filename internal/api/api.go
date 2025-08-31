@@ -6,11 +6,15 @@ import (
 )
 
 type ShortenerApi struct {
-	server http.Server
+	server *http.Server
 }
 
 func NewShortenerApi() ShortenerApi {
-	return ShortenerApi{}
+	api := ShortenerApi{
+		server: &http.Server{},
+	}
+	api.server.Handler = api.SetupRoutes()
+	return api
 }
 
 func (self *ShortenerApi) CreateUrlRoute(w http.ResponseWriter, r *http.Request) {
@@ -30,9 +34,6 @@ func (self *ShortenerApi) SetupRoutes() *http.ServeMux {
 }
 
 func (self *ShortenerApi) Listen(addr string) {
-	self.server = http.Server{
-		Addr: addr,
-		Handler: self.SetupRoutes(),
-	}
+	self.server.Addr = addr
 	self.server.ListenAndServe()
 }
