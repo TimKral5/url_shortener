@@ -6,4 +6,3 @@ func main() {
 	api := api.NewShortenerApi()
 	api.Listen(":3005")
 }
-

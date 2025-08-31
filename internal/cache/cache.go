@@ -2,7 +2,7 @@ package cache
 
 type CacheError struct {
 	Message string
-	Code int
+	Code    int
 }
 
 type CacheConnection interface {
@@ -13,7 +13,7 @@ type CacheConnection interface {
 func NewCacheError(message string, code int) CacheError {
 	return CacheError{
 		Message: message,
-		Code: code,
+		Code:    code,
 	}
 }
 

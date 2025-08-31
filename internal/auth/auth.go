@@ -2,7 +2,7 @@ package auth
 
 type AuthError struct {
 	Message string
-	Code int
+	Code    int
 }
 
 type AuthConnection interface {
@@ -13,7 +13,7 @@ type AuthConnection interface {
 func NewAuthError(message string, code int) AuthError {
 	return AuthError{
 		Message: message,
-		Code: code,
+		Code:    code,
 	}
 }
 

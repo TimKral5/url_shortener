@@ -2,7 +2,7 @@ package database
 
 type DatabaseError struct {
 	Message string
-	Code int
+	Code    int
 }
 
 type DatastoreConnection interface {
@@ -13,7 +13,7 @@ type DatastoreConnection interface {
 func NewDatabaseError(message string, code int) DatabaseError {
 	return DatabaseError{
 		Message: message,
-		Code: code,
+		Code:    code,
 	}
 }
 

@@ -1,13 +1,13 @@
 package cache
 
 type FakeCacheConnection struct {
-	FailConnect bool
+	FailConnect    bool
 	FailDisconnect bool
 }
 
 func NewFakeCacheConnection() *FakeCacheConnection {
 	return &FakeCacheConnection{
-		FailConnect: false,
+		FailConnect:    false,
 		FailDisconnect: false,
 	}
 }

@@ -1,15 +1,17 @@
 RM_TARGET = $$(echo "$@" | cut -c 2-)
+GO_FILES = $$(find . -name '*.go')
 
 h: help
 help:
 	@echo "Available targets:"
-	@echo "   h, help   Show this prompt."
-	@echo "   b, build  Build the project and its executables."
-	@echo "   t, test   Run all tests of the project."
-	@echo "   r, run    Launch the url_shortener executable."
-	@echo "   c, clean  Clean up all generated files."
+	@echo "   h, help    Show this prompt."
+	@echo "   b, build   Build the project and its executables."
+	@echo "   t, test    Run all tests of the project."
+	@echo "   r, run     Launch the url_shortener executable."
+	@echo "   f, format  Format all .go files in the project."
+	@echo "   c, clean   Clean up all generated files."
 
-.PHONY: h help b build t test r run _clean c clean
+.PHONY: h help b build t test r run f format _clean c clean
 
 b: build
 build: url_shortener
@@ -23,12 +25,24 @@ run:
 	go run ./cmd/url_shortener
 
 url_shortener:
+	@echo ''
 	go build ./cmd/url_shortener
+
+f: format
+format:
+	@echo 'Formatting...'
+	@for i in $(GO_FILES); do\
+		echo "   $$i";\
+		go fmt "$$i";\
+	done
+	@echo 'done.'
 
 _url_shortener:
 	@printf "\033[0;34mTrying to remove the $(RM_TARGET) executable...\033[0m "
-	@[ ! -f "$(RM_TARGET)" ] && echo -e '\033[0;31malready removed.\033[0m';:
-	@[ -f "$(RM_TARGET)" ] && rm "$(RM_TARGET)" && echo -e '\033[0;32mdone.\033[0m';:
+	@[ ! -f "$(RM_TARGET)" ] &&\
+		echo -e '\033[0;31malready removed.\033[0m';:
+	@[ -f "$(RM_TARGET)" ] &&\
+		rm "$(RM_TARGET)" && echo -e '\033[0;32mdone.\033[0m';:
 
 _clean:
 	@echo -e '\033[0;33m== Cleanup Script ==\033[0m'

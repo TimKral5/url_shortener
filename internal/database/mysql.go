@@ -18,4 +18,3 @@ func (self *MySQLConnection) Connect(connStr string) error {
 func (self *MySQLConnection) Disconnect() error {
 	return nil
 }
-

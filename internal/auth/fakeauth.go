@@ -1,13 +1,13 @@
 package auth
 
 type FakeAuthConnection struct {
-	FailConnect bool
+	FailConnect    bool
 	FailDisconnect bool
 }
 
 func NewFakeAuthConnection() *FakeAuthConnection {
 	return &FakeAuthConnection{
-		FailConnect: false,
+		FailConnect:    false,
 		FailDisconnect: false,
 	}
 }

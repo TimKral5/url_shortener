@@ -1,13 +1,13 @@
 package database
 
 type FakeDatabaseConnection struct {
-	FailConnect bool
+	FailConnect    bool
 	FailDisconnect bool
 }
 
 func NewFakeDatabaseConnection() *FakeDatabaseConnection {
 	return &FakeDatabaseConnection{
-		FailConnect: false,
+		FailConnect:    false,
 		FailDisconnect: false,
 	}
 }
