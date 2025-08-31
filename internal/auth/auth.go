@@ -1,22 +1,21 @@
+// Package auth handles the storage of user related data, as well as
+// authentication and authorization.
 package auth
 
-type AuthError struct {
+// Error is a container for all authentication related errors.
+type Error struct {
 	Message string
 	Code    int
 }
 
-type AuthConnection interface {
+// Connection is an interface all implementations of an auth database
+// wrapper have to comply with.
+type Connection interface {
 	Connect(connStr string) error
 	Disconnect() error
 }
 
-func NewAuthError(message string, code int) AuthError {
-	return AuthError{
-		Message: message,
-		Code:    code,
-	}
-}
-
-func (self AuthError) Error() string {
-	return self.Message
+// Error returns the error message.
+func (err Error) Error() string {
+	return err.Message
 }

@@ -1,10 +1,20 @@
 package auth
 
+const (
+	// FakeConnectError is the code for a failed connection.
+	FakeConnectError = iota
+	// FakeDisconnectError is the code for a failed termination of a
+	// connection.
+	FakeDisconnectError
+)
+
+// FakeAuthConnection is a mock auth connection for testing.
 type FakeAuthConnection struct {
 	FailConnect    bool
 	FailDisconnect bool
 }
 
+// NewFakeAuthConnection constructs a new fake auth connection.
 func NewFakeAuthConnection() *FakeAuthConnection {
 	return &FakeAuthConnection{
 		FailConnect:    false,
@@ -12,16 +22,28 @@ func NewFakeAuthConnection() *FakeAuthConnection {
 	}
 }
 
-func (self *FakeAuthConnection) Connect(connStr string) error {
-	if self.FailConnect {
-		return NewAuthError("Could not connect.", 1)
+// Connect emulates the establishment of a connection. Its behaviour
+// can be controlled using the FailConnect property.
+func (conn *FakeAuthConnection) Connect(_ string) error {
+	if conn.FailConnect {
+		return Error{
+			Message: "Could not connect.",
+			Code:    FakeConnectError,
+		}
 	}
+
 	return nil
 }
 
-func (self *FakeAuthConnection) Disconnect() error {
-	if self.FailDisconnect {
-		return NewAuthError("Could not disconnect.", 2)
+// Disconnect emulates the termination of a connection. Its behaviour
+// can be controlled using the FailDisconnect property.
+func (conn *FakeAuthConnection) Disconnect() error {
+	if conn.FailDisconnect {
+		return Error{
+			Message: "Could not disconnect.",
+			Code:    FakeDisconnectError,
+		}
 	}
+
 	return nil
 }

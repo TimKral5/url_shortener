@@ -25,6 +25,10 @@ test:
 	@go test -v -coverprofile "coverage.out" $(GO_MODULES)
 	@go tool cover -html "coverage.out" -o "coverage.html"
 
+l: lint
+lint:
+	golangci-lint run
+
 r: run
 run:
 	go run ./cmd/url_shortener
