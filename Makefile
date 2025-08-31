@@ -11,11 +11,12 @@ help:
 	@echo "   h, help    Show this prompt."
 	@echo "   b, build   Build the project and its executables."
 	@echo "   t, test    Run all tests of the project."
+	@echo "   l, lint    Run the linter on all project files."
 	@echo "   r, run     Launch the url_shortener executable."
 	@echo "   f, format  Format all .go files in the project."
 	@echo "   c, clean   Clean up all generated files."
 
-.PHONY: h help b build t test r run f format _clean c clean coverage
+.PHONY: h help b build t test l lint r run f format _clean c clean coverage
 
 b: build
 build: url_shortener
