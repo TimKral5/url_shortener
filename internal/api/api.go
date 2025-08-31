@@ -3,10 +3,17 @@ package api
 import (
 	"net/http"
 	"strings"
+
+	"github.com/timkral5/url_shortener/internal/auth"
+	"github.com/timkral5/url_shortener/internal/cache"
+	"github.com/timkral5/url_shortener/internal/database"
 )
 
 type ShortenerApi struct {
-	server *http.Server
+	server   *http.Server
+	database database.DatastoreConnection
+	cache    cache.CacheConnection
+	auth     auth.AuthConnection
 }
 
 func NewShortenerApi() ShortenerApi {
@@ -15,6 +22,18 @@ func NewShortenerApi() ShortenerApi {
 	}
 	api.server.Handler = api.SetupRoutes()
 	return api
+}
+
+func (self *ShortenerApi) AttachDatabase(database database.DatastoreConnection) {
+	self.database = database
+}
+
+func (self *ShortenerApi) AttachCache(cache cache.CacheConnection) {
+	self.cache = cache
+}
+
+func (self *ShortenerApi) AttachAuthDatabase(auth auth.AuthConnection) {
+	self.auth = auth
 }
 
 func (self *ShortenerApi) CreateUrlRoute(w http.ResponseWriter, r *http.Request) {
