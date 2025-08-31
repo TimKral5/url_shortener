@@ -1,6 +1,10 @@
 RM_TARGET = $$(echo "$@" | cut -c 2-)
 GO_FILES = $$(find . -name '*.go')
 
+GO_MODULES_CMD = $$(for i in $$(ls -1 ./cmd); do echo ./cmd/$$i; done)
+GO_MODULES_INTERNAL = $$(for i in $$(ls -1 ./internal); do echo ./internal/$$i; done)
+GO_MODULES = $(GO_MODULES_CMD) $(GO_MODULES_INTERNAL)
+
 h: help
 help:
 	@echo "Available targets:"
@@ -11,14 +15,15 @@ help:
 	@echo "   f, format  Format all .go files in the project."
 	@echo "   c, clean   Clean up all generated files."
 
-.PHONY: h help b build t test r run f format _clean c clean
+.PHONY: h help b build t test r run f format _clean c clean coverage
 
 b: build
 build: url_shortener
 
 t: test
 test:
-	go test ./...
+	@go test -v -coverprofile "coverage.out" $(GO_MODULES)
+	@go tool cover -html "coverage.out" -o "coverage.html"
 
 r: run
 run:
@@ -37,7 +42,7 @@ format:
 	done
 	@echo 'done.'
 
-_url_shortener:
+_url_shortener _coverage.html _coverage.out:
 	@printf "\033[0;34mTrying to remove the $(RM_TARGET) executable...\033[0m "
 	@[ ! -f "$(RM_TARGET)" ] &&\
 		echo -e '\033[0;31malready removed.\033[0m';:
@@ -47,5 +52,6 @@ _url_shortener:
 _clean:
 	@echo -e '\033[0;33m== Cleanup Script ==\033[0m'
 c: clean
-clean: _clean _url_shortener
+
+clean: _clean _url_shortener _coverage.html _coverage.out
 
