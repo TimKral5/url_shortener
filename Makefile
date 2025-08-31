@@ -1,8 +1,15 @@
+RM_TARGET = $$(echo "$@" | cut -c 2-)
+
+h: help
 help:
 	@echo "Available targets:"
+	@echo "   h, help   Show this prompt."
 	@echo "   b, build  Build the project and its executables."
 	@echo "   t, test   Run all tests of the project."
 	@echo "   r, run    Launch the url_shortener executable."
+	@echo "   c, clean  Clean up all generated files."
+
+.PHONY: h help b build t test r run _clean c clean
 
 b: build
 build: url_shortener
@@ -17,3 +24,14 @@ run:
 
 url_shortener:
 	go build ./cmd/url_shortener
+
+_url_shortener:
+	@printf "\033[0;34mTrying to remove the $(RM_TARGET) executable...\033[0m "
+	@[ ! -f "$(RM_TARGET)" ] && echo -e '\033[0;31malready removed.\033[0m';:
+	@[ -f "$(RM_TARGET)" ] && rm "$(RM_TARGET)" && echo -e '\033[0;32mdone.\033[0m';:
+
+_clean:
+	@echo -e '\033[0;33m== Cleanup Script ==\033[0m'
+c: clean
+clean: _clean _url_shortener
+
