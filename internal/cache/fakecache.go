@@ -12,6 +12,7 @@ const (
 type FakeCacheConnection struct {
 	FailConnect    bool
 	FailDisconnect bool
+	URLs           map[string]string
 }
 
 // NewFakeCacheConnection constructs a new fake cache connection.
@@ -19,6 +20,7 @@ func NewFakeCacheConnection() *FakeCacheConnection {
 	return &FakeCacheConnection{
 		FailConnect:    false,
 		FailDisconnect: false,
+		URLs:           map[string]string{},
 	}
 }
 
@@ -46,4 +48,17 @@ func (conn *FakeCacheConnection) Disconnect() error {
 	}
 
 	return nil
+}
+
+// CreateURL emulates the creation of a new shortened URL.
+func (conn *FakeCacheConnection) AddURL(short string, full string) error {
+	conn.URLs[short] = full
+	return nil
+}
+
+// GetURL emulates fetching a URL from its hash.
+func (conn *FakeCacheConnection) GetURL(short string) (string, error) {
+	entry := conn.URLs[short]
+
+	return entry, nil
 }
