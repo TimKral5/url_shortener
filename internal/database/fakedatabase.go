@@ -1,5 +1,11 @@
 package database
 
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"strings"
+)
+
 const (
 	// FakeConnectError is the code for a failed connection.
 	FakeConnectError = iota
@@ -12,6 +18,7 @@ const (
 type FakeDatabaseConnection struct {
 	FailConnect    bool
 	FailDisconnect bool
+	URLs           map[string]string
 }
 
 // NewFakeDatabaseConnection constructs a fake database connection.
@@ -19,6 +26,7 @@ func NewFakeDatabaseConnection() *FakeDatabaseConnection {
 	return &FakeDatabaseConnection{
 		FailConnect:    false,
 		FailDisconnect: false,
+		URLs:           map[string]string{},
 	}
 }
 
@@ -46,4 +54,22 @@ func (conn *FakeDatabaseConnection) Disconnect() error {
 	}
 
 	return nil
+}
+
+// CreateURL emulates the creation of a new shortened URL.
+func (conn *FakeDatabaseConnection) CreateURL(full string) (string, error) {
+	hash := sha256.New()
+	hash.Write([]byte(full))
+	hashStr := strings.ToUpper(hex.EncodeToString(hash.Sum(nil))[:10])
+
+	conn.URLs[hashStr] = full
+
+	return hashStr, nil
+}
+
+// GetURL emulates fetching a URL from its hash.
+func (conn *FakeDatabaseConnection) GetURL(hash string) (string, error) {
+	entry := conn.URLs[hash]
+
+	return entry, nil
 }

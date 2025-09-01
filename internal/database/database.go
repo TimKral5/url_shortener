@@ -13,6 +13,8 @@ type Error struct {
 type Connection interface {
 	Connect(connStr string) error
 	Disconnect() error
+	CreateURL(full string) (string, error)
+	GetURL(hash string) (string, error)
 }
 
 // Error returns the error message.
