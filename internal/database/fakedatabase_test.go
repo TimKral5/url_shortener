@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/timkral5/url_shortener/internal/database"
+	"github.com/timkral5/url_shortener/internal/util"
 )
 
 func TestConnect(t *testing.T) {
@@ -41,22 +42,23 @@ func TestConnect(t *testing.T) {
 	}
 }
 
-func TestCreateURL(t *testing.T) {
+func TestAddURL(t *testing.T) {
 	t.Parallel()
 
-	url := "https://example.com"
-	urlHash := "100680AD54"
+	ctrlUrl := "https://example.com"
+	ctrlHash := "100680AD54"
 
 	var conn database.Connection = database.NewFakeDatabaseConnection()
 
-	hash, err := conn.CreateURL(url)
+	hash := util.GenerateSHA256Hex(ctrlUrl)[:10]
+	err := conn.AddURL(hash, ctrlUrl)
 	if err != nil {
 		t.Error(err)
 
 		return
 	}
 
-	if hash != urlHash {
+	if hash != ctrlHash {
 		t.Error("Hash does not match the expected value.")
 
 		return
@@ -69,7 +71,7 @@ func TestCreateURL(t *testing.T) {
 		return
 	}
 
-	if full != url {
+	if full != ctrlUrl {
 		t.Error("The full URL does not match the expected value.")
 	}
 }
