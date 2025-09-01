@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/timkral5/url_shortener/internal/database"
-	"github.com/timkral5/url_shortener/internal/util"
+	"github.com/timkral5/url_shortener/internal/hash"
 )
 
 func TestConnect(t *testing.T) {
@@ -50,7 +50,7 @@ func TestAddURL(t *testing.T) {
 
 	var conn database.Connection = database.NewFakeDatabaseConnection()
 
-	hash := util.GenerateSHA256Hex(ctrlUrl)[:10]
+	hash := hash.GenerateSHA256Hex(ctrlUrl)[:10]
 	err := conn.AddURL(hash, ctrlUrl)
 	if err != nil {
 		t.Error(err)
