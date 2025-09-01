@@ -45,13 +45,14 @@ func TestConnect(t *testing.T) {
 func TestAddURL(t *testing.T) {
 	t.Parallel()
 
-	ctrlUrl := "https://example.com"
+	ctrlURL := "https://example.com"
 	ctrlHash := "100680AD54"
 
 	var conn cache.Connection = cache.NewFakeCacheConnection()
 
-	hash := hash.GenerateSHA256Hex(ctrlUrl)[:10]
-	err := conn.AddURL(hash, ctrlUrl)
+	hash := hash.GenerateSHA256Hex(ctrlURL)[:10]
+
+	err := conn.AddURL(hash, ctrlURL)
 	if err != nil {
 		t.Error(err)
 
@@ -71,7 +72,7 @@ func TestAddURL(t *testing.T) {
 		return
 	}
 
-	if full != ctrlUrl {
+	if full != ctrlURL {
 		t.Error("The full URL does not match the expected value.")
 	}
 }

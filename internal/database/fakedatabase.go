@@ -50,9 +50,10 @@ func (conn *FakeDatabaseConnection) Disconnect() error {
 	return nil
 }
 
-// CreateURL emulates the creation of a new shortened URL.
+// AddURL emulates the creation of a new entry in the database.
 func (conn *FakeDatabaseConnection) AddURL(short string, full string) error {
 	conn.URLs[short] = full
+
 	return nil
 }
 

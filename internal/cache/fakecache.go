@@ -50,9 +50,10 @@ func (conn *FakeCacheConnection) Disconnect() error {
 	return nil
 }
 
-// CreateURL emulates the creation of a new shortened URL.
+// AddURL emulates the creation of a new entry in the cache.
 func (conn *FakeCacheConnection) AddURL(short string, full string) error {
 	conn.URLs[short] = full
+
 	return nil
 }
 
