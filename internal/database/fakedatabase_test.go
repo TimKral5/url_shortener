@@ -74,5 +74,8 @@ func TestAddURL(t *testing.T) {
 
 	if full != ctrlURL {
 		t.Error("The full URL does not match the expected value.")
+		t.Error()
+
+		return
 	}
 }

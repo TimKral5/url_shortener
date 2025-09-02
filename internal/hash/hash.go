@@ -11,7 +11,7 @@ import (
 func GenerateSHA256Hex(source string) string {
 	hash := sha256.New()
 	hash.Write([]byte(source))
-	hashStr := strings.ToUpper(hex.EncodeToString(hash.Sum(nil))[:10])
+	hashStr := strings.ToUpper(hex.EncodeToString(hash.Sum(nil)))
 
 	return hashStr
 }
