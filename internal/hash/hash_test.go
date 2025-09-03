@@ -15,7 +15,8 @@ func TestGenerateSHA256Hex(t *testing.T) {
 
 	hash := hash.GenerateSHA256Hex(ctrlText)
 	if hash != ctrlHash {
-		t.Fail()
+		t.Error("Hash does not match the expected value.")
+		t.Error("Expected", ctrlHash, "got", hash)
 
 		return
 	}
