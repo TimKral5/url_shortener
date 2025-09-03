@@ -2,9 +2,9 @@
 // this project.
 package main
 
-import "github.com/timkral5/url_shortener/internal/api"
+import "github.com/timkral5/url_shortener/internal/server"
 
 func main() {
-	api := api.NewShortenerAPI()
-	api.Listen(":3005")
+	server := server.NewServer()
+	server.Listen(":3005")
 }

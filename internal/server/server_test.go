@@ -1,4 +1,4 @@
-package api_test
+package server_test
 
 import (
 	"bytes"
@@ -7,14 +7,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	_api "github.com/timkral5/url_shortener/internal/api"
+	"github.com/timkral5/url_shortener/internal/server"
 )
 
-var api _api.ShortenerAPI
+var api server.Server
 var hash string
 
-func TestAddURL(t *testing.T) {
-	api = _api.NewShortenerAPI()
+func TestAddURL(t *testing.T) {	
+	api = server.NewServer()
 	mock := httptest.NewUnstartedServer(api.SetupRoutes())
 
 	body := []byte(`{
@@ -46,6 +46,7 @@ func TestAddURL(t *testing.T) {
 	}
 
 	var resBody []byte
+
 	_, err = res.Body.Read(resBody)
 	if err != nil {
 		t.Error("Failed to read the response body.")
