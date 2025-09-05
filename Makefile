@@ -15,9 +15,10 @@ help:
 	@echo "   l, lint    Run the linter on all project files."
 	@echo "   r, run     Launch the url_shortener executable."
 	@echo "   f, format  Format all .go files in the project."
+	@echo "   s, stats   Show repository stats."
 	@echo "   c, clean   Clean up all generated files."
 
-.PHONY: h help b build t test l lint r run f format _clean c clean coverage
+.PHONY: h help b build t test l lint r run f format s stats _clean c clean coverage
 
 b: build
 build: url_shortener
@@ -47,6 +48,14 @@ format:
 		go fmt "$$i";\
 	done
 	@echo 'done.'
+
+s: stats
+stats:
+	@echo "== STATS =="
+	@echo
+	@echo "Languages:"
+	@echo "   Go: $$(git ls-files | grep .go\$$ | xargs wc -l | grep total | xargs | cut -d ' ' -f 1) lines"
+	@echo "   Markdown: $$(git ls-files | grep .md\$$ | xargs wc -l | grep total | xargs | cut -d ' ' -f 1) lines"
 
 _url_shortener _coverage.html _coverage.out:
 	@printf "\033[0;34mTrying to remove the $(RM_TARGET) executable...\033[0m "
