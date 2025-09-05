@@ -3,7 +3,6 @@
 package server
 
 import (
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -11,6 +10,7 @@ import (
 	"github.com/timkral5/url_shortener/internal/auth"
 	"github.com/timkral5/url_shortener/internal/cache"
 	"github.com/timkral5/url_shortener/internal/database"
+	"github.com/timkral5/url_shortener/pkg/api"
 )
 
 const requestTimeout time.Duration = 10 * time.Second
@@ -26,55 +26,78 @@ type Server struct {
 
 // NewServer constructs a new shortener API instance.
 func NewServer() Server {
-	api := Server{
+	server := Server{
 		server:   nil,
 		Database: nil,
 		Cache:    nil,
 		Auth:     nil,
 	}
 
-	return api
+	return server
 }
 
 // CreateURLRoute creates a new shortened URL.
-func (api *Server) CreateURLRoute(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusOK)
+func (server *Server) CreateURLRoute(writer http.ResponseWriter, _ *http.Request) {
+	response := api.NewEmptyAddURLResponse()
+	response.Hash = "Not Implemented"
+
+	json, err := response.DumpJSON()
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	_, err = writer.Write(json)
+	if err != nil {
+		return
+	}
 }
 
 // GetURLRoute fetches a full URL using its shortened ID.
-func (api *Server) GetURLRoute(w http.ResponseWriter, r *http.Request) {
-	id := strings.ToUpper(r.URL.Path[1:])
+func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Request) {
+	id := strings.ToUpper(request.URL.Path[1:])
 
-	_, err := w.Write([]byte(id))
+	response := api.NewEmptyGetURLResponse()
+	response.URL = "Not Implemented (input: " + id + ")"
+
+	json, err := response.DumpJSON()
 	if err != nil {
-		log.Println(err)
+		writer.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	_, err = writer.Write(json)
+	if err != nil {
+		return
 	}
 }
 
 // SetupRoutes constructs a serve mux and mounts all routes to it.
-func (api *Server) SetupRoutes() *http.ServeMux {
+func (server *Server) SetupRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /", api.CreateURLRoute)
-	mux.HandleFunc("GET /", api.GetURLRoute)
+	mux.HandleFunc("POST /", server.CreateURLRoute)
+	mux.HandleFunc("GET /", server.GetURLRoute)
 
 	return mux
 }
 
 // Listen launches the HTTP server under the given address.
-func (api *Server) Listen(addr string) bool {
-	api.configureServer(addr)
-	err := api.server.ListenAndServe()
+func (server *Server) Listen(addr string) bool {
+	server.configureServer(addr)
+	err := server.server.ListenAndServe()
 
 	return err == nil
 }
 
-func (api *Server) configureServer(addr string) {
-	api.server = &http.Server{
+func (server *Server) configureServer(addr string) {
+	server.server = &http.Server{
 		ReadTimeout:                  requestTimeout,
 		ReadHeaderTimeout:            requestTimeout,
 		IdleTimeout:                  requestTimeout,
 		Addr:                         addr,
-		Handler:                      api.SetupRoutes(),
+		Handler:                      server.SetupRoutes(),
 		DisableGeneralOptionsHandler: true,
 		TLSConfig:                    nil,
 		WriteTimeout:                 requestTimeout,

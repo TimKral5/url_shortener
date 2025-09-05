@@ -13,6 +13,12 @@ linters:
           allow:
             - $gostd
             - github.com/timkral5
+    funlen:
+      lines: 30
+    tagliatelle:
+      case:
+        rules:
+          json: snake
   exclusions:
     rules:
       - path: ".*_test\\.go$"

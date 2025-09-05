@@ -2,8 +2,9 @@ RM_TARGET = $$(echo "$@" | cut -c 2-)
 GO_FILES = $$(find . -name '*.go')
 
 GO_MODULES_CMD = $$(for i in $$(ls -1 ./cmd); do echo ./cmd/$$i; done)
+GO_MODULES_PKG = $$(for i in $$(ls -1 ./pkg); do echo ./pkg/$$i; done)
 GO_MODULES_INTERNAL = $$(for i in $$(ls -1 ./internal); do echo ./internal/$$i; done)
-GO_MODULES = $(GO_MODULES_CMD) $(GO_MODULES_INTERNAL)
+GO_MODULES = $(GO_MODULES_CMD) $(GO_MODULES_PKG) $(GO_MODULES_INTERNAL)
 
 h: help
 help:
@@ -23,8 +24,8 @@ build: url_shortener
 
 t: test
 test:
-	@go test -v -coverprofile "coverage.out" $(GO_MODULES)
-	@go tool cover -html "coverage.out" -o "coverage.html"
+	-@go test -v -coverprofile "coverage.out" $(GO_MODULES)
+	-@go tool cover -html "coverage.out" -o "coverage.html"
 
 l: lint
 lint:
