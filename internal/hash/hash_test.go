@@ -6,7 +6,6 @@ import (
 	"github.com/timkral5/url_shortener/internal/hash"
 )
 
-
 func TestGenerateSHA256Hex(t *testing.T) {
 	t.Parallel()
 

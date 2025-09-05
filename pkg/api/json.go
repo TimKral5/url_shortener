@@ -8,7 +8,7 @@ func LoadJSON(dest any, source []byte) error {
 	if err != nil {
 		return Error{
 			Message: "Failed to parse the JSON.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -21,7 +21,7 @@ func DumpJSON(obj any) ([]byte, error) {
 	if err != nil {
 		return nil, Error{
 			Message: "Failed to dump the JSON.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 

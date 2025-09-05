@@ -12,21 +12,21 @@ import (
 // Error represents an error during any operation regarding the API.
 type Error struct {
 	Message string
-	Inner error
+	Inner   error
 }
 
 // Client handles and represents all communication to the URL
 // Shortener API.
 type Client struct {
 	connected bool
-	baseURL string
+	baseURL   string
 }
 
 // NewEmptyError constructs an empty error with default values.
 func NewEmptyError() Error {
 	return Error{
 		Message: "",
-		Inner: nil,
+		Inner:   nil,
 	}
 }
 
@@ -39,7 +39,7 @@ func (err Error) Error() string {
 func NewClient() Client {
 	return Client{
 		connected: false,
-		baseURL: "",
+		baseURL:   "",
 	}
 }
 
@@ -69,14 +69,14 @@ func (api *Client) AddURL(url string) (*AddURLResponse, error) {
 	if err != nil {
 		return NewEmptyAddURLResponse(), Error{
 			Message: "Failed to finish the request.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
 	if httpResponse.StatusCode != http.StatusOK {
 		return NewEmptyAddURLResponse(), Error{
 			Message: "The status code is not 200.",
-			Inner: nil,
+			Inner:   nil,
 		}
 	}
 
@@ -95,20 +95,20 @@ func (api *Client) GetURL(id string) (*GetURLResponse, error) {
 	httpRequest, err := api.setupGetURLRequest(id)
 	if err != nil {
 		return NewEmptyGetURLResponse(), err
-	}	
+	}
 
 	httpResponse, err := client.Do(httpRequest)
 	if err != nil {
 		return NewEmptyGetURLResponse(), Error{
 			Message: "Failed to finish the request.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
 	if httpResponse.StatusCode != http.StatusOK {
 		return NewEmptyGetURLResponse(), Error{
 			Message: "The status code is not 200.",
-			Inner: nil,
+			Inner:   nil,
 		}
 	}
 
@@ -129,7 +129,7 @@ func (api *Client) setupAddURLRequest(url string) (*http.Request, error) {
 	if err != nil {
 		return nil, Error{
 			Message: "Failed to setup the request body.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -142,7 +142,7 @@ func (api *Client) setupAddURLRequest(url string) (*http.Request, error) {
 	if err != nil {
 		return nil, Error{
 			Message: "Failed to setup the request.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -153,13 +153,13 @@ func (api *Client) setupGetURLRequest(id string) (*http.Request, error) {
 	httpRequest, err := http.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
-		api.baseURL + "/" + id,
+		api.baseURL+"/"+id,
 		nil,
 	)
 	if err != nil {
 		return nil, Error{
 			Message: "Failed to setup the request.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -171,7 +171,7 @@ func handleAddURLResponse(httpResponse *http.Response) (*AddURLResponse, error) 
 	if err != nil {
 		return NewEmptyAddURLResponse(), Error{
 			Message: "Failed to read the response body.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -181,7 +181,7 @@ func handleAddURLResponse(httpResponse *http.Response) (*AddURLResponse, error) 
 	if err != nil {
 		return NewEmptyAddURLResponse(), Error{
 			Message: "Failed to parse the response body.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -189,7 +189,7 @@ func handleAddURLResponse(httpResponse *http.Response) (*AddURLResponse, error) 
 	if err != nil {
 		return NewEmptyAddURLResponse(), Error{
 			Message: "Failed to close the response body.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -201,7 +201,7 @@ func handleGetURLResponse(httpResponse *http.Response) (*GetURLResponse, error) 
 	if err != nil {
 		return NewEmptyGetURLResponse(), Error{
 			Message: "Failed to read the response body.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -211,7 +211,7 @@ func handleGetURLResponse(httpResponse *http.Response) (*GetURLResponse, error) 
 	if err != nil {
 		return NewEmptyGetURLResponse(), Error{
 			Message: "Failed to parse the response body.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 
@@ -219,7 +219,7 @@ func handleGetURLResponse(httpResponse *http.Response) (*GetURLResponse, error) 
 	if err != nil {
 		return NewEmptyGetURLResponse(), Error{
 			Message: "Failed to close the response body.",
-			Inner: err,
+			Inner:   err,
 		}
 	}
 

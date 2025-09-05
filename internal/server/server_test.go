@@ -17,7 +17,6 @@ var mock *httptest.Server
 
 var hash string
 
-
 func TestAPIEndpoints(t *testing.T) {
 	server = _server.NewServer()
 	mock = httptest.NewUnstartedServer(server.SetupRoutes())
@@ -29,7 +28,7 @@ func TestAPIEndpoints(t *testing.T) {
 	t.Run("TestGetURL", testGetURL)
 }
 
-func testAddURL(t *testing.T) {	
+func testAddURL(t *testing.T) {
 	api := _api.NewClient()
 	api.Bind(mock.URL)
 

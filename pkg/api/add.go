@@ -10,7 +10,6 @@ type AddURLResponse struct {
 	Hash string `json:"hash"`
 }
 
-
 // NewEmptyAddURLRequest constructs an empty AddURLResponse.
 func NewEmptyAddURLRequest() *AddURLRequest {
 	return &AddURLRequest{
@@ -24,7 +23,6 @@ func NewEmptyAddURLResponse() *AddURLResponse {
 		Hash: "",
 	}
 }
-
 
 // LoadJSON parses and loads the data from JSON into the current
 // object.
