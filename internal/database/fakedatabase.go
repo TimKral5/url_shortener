@@ -6,6 +6,9 @@ const (
 	// FakeDisconnectError is the code for a failed termination of a
 	// connection.
 	FakeDisconnectError
+	// FakeGetError is the error that occurs when fetching an entry
+	// fails.
+	FakeGetError
 )
 
 // FakeDatabaseConnection is a mock database connection for testing.
@@ -60,6 +63,13 @@ func (conn *FakeDatabaseConnection) AddURL(short string, full string) error {
 // GetURL emulates fetching a URL from its hash.
 func (conn *FakeDatabaseConnection) GetURL(short string) (string, error) {
 	entry := conn.URLs[short]
+
+	if entry == "" {
+		return "", Error{
+			Message: "Could not fetch resource.",
+			Code:    FakeGetError,
+		}
+	}
 
 	return entry, nil
 }

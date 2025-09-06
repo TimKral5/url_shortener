@@ -2,9 +2,15 @@
 // this project.
 package main
 
-import "github.com/timkral5/url_shortener/internal/server"
+import (
+	"github.com/timkral5/url_shortener/internal/cache"
+	"github.com/timkral5/url_shortener/internal/database"
+	"github.com/timkral5/url_shortener/internal/server"
+)
 
 func main() {
 	server := server.NewServer()
+	server.Cache = cache.NewFakeCacheConnection()
+	server.Database = database.NewFakeDatabaseConnection()
 	server.Listen(":3005")
 }

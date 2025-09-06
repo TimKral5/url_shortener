@@ -5,6 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/timkral5/url_shortener/internal/cache"
+	"github.com/timkral5/url_shortener/internal/database"
 	_server "github.com/timkral5/url_shortener/internal/server"
 	_api "github.com/timkral5/url_shortener/pkg/api"
 )
@@ -19,6 +21,10 @@ var hash string
 
 func TestAPIEndpoints(t *testing.T) {
 	server = _server.NewServer()
+	cache.NewFakeCacheConnection()
+	server.Database = database.NewFakeDatabaseConnection()
+	server.Cache = cache.NewFakeCacheConnection()
+
 	mock = httptest.NewUnstartedServer(server.SetupRoutes())
 
 	mock.Start()
@@ -45,9 +51,9 @@ func testAddURL(t *testing.T) {
 		return
 	}
 
-	if response.Hash != testHash[:10] {
+	if response.Hash != testHash {
 		t.Error("The received hash does not match the expected value.")
-		t.Error("Expected", testHash[:10], "but got", response.Hash)
+		t.Error("Expected", testHash, "but got", response.Hash)
 	}
 
 	hash = response.Hash
@@ -57,7 +63,7 @@ func testGetURL(t *testing.T) {
 	api := _api.NewClient()
 	api.Bind(mock.URL)
 
-	response, err := api.GetURL(testHash[:10])
+	response, err := api.GetURL(testHash)
 	if err != nil {
 		t.Error("Failed to perform the request.")
 		t.Error(err)
