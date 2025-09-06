@@ -10,6 +10,8 @@ h: help
 help:
 	@echo "Available targets:"
 	@echo "   h, help    Show this prompt."
+	@echo "   g, godoc   Launch documenation server."
+	@echo "   m, mkdocs  Launch documenation server."
 	@echo "   b, build   Build the project and its executables."
 	@echo "   t, test    Run all tests of the project."
 	@echo "   l, lint    Run the linter on all project files."
@@ -18,7 +20,16 @@ help:
 	@echo "   s, stats   Show repository stats."
 	@echo "   c, clean   Clean up all generated files."
 
-.PHONY: h help b build t test l lint r run f format s stats _clean c clean coverage
+.PHONY: h help g godoc m mkdoc b build t test l lint r run f format s stats _clean c clean coverage
+
+g: godoc
+godoc:
+	@echo Access documentation here: http://localhost:6060/pkg/?m=all
+	@godoc
+
+m: mkdocs
+mkdocs:
+	@mkdocs serve -a 0.0.0.0:3005
 
 b: build
 build: url_shortener
