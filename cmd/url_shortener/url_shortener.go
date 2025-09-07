@@ -12,5 +12,5 @@ func main() {
 	server := server.NewServer()
 	server.Cache = cache.NewFakeCacheConnection()
 	server.Database = database.NewFakeDatabaseConnection()
-	server.Listen(":3005")
+	server.Listen(":3000")
 }
