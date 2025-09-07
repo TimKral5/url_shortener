@@ -36,7 +36,7 @@ build: url_shortener
 
 t: test
 test:
-	-@go test -v -coverprofile "coverage.out" $(GO_MODULES)
+	-@go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
 	-@go tool cover -html "coverage.out" -o "coverage.html"
 
 l: lint

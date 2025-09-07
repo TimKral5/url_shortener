@@ -21,7 +21,9 @@ var hash string
 
 func TestAPIEndpoints(t *testing.T) {
 	server = _server.NewServer()
+
 	cache.NewFakeCacheConnection()
+
 	server.Database = database.NewFakeDatabaseConnection()
 	server.Cache = cache.NewFakeCacheConnection()
 
@@ -32,6 +34,41 @@ func TestAPIEndpoints(t *testing.T) {
 
 	t.Run("TestAddURL", testAddURL)
 	t.Run("TestGetURL", testGetURL)
+}
+
+func BenchmarkGetURL(b *testing.B) {
+	server = _server.NewServer()
+
+	cache.NewFakeCacheConnection()
+
+	server.Database = database.NewFakeDatabaseConnection()
+	server.Cache = cache.NewFakeCacheConnection()
+
+	mock = httptest.NewUnstartedServer(server.SetupRoutes())
+
+	mock.Start()
+	defer mock.Close()
+
+	api := _api.NewClient()
+	api.Bind(mock.URL)
+
+	err := server.Database.AddURL(testHash, testURL)
+	if err != nil {
+		b.Error("Test URL could not be set up.")
+		b.Error(err)
+
+		return
+	}
+
+	for b.Loop() {
+		_, err := api.GetURL(testHash)
+		if err != nil {
+			b.Error("Failed to fetch URL")
+			b.Error(err)
+
+			return
+		}
+	}
 }
 
 func testAddURL(t *testing.T) {

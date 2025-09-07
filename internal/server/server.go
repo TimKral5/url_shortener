@@ -139,17 +139,15 @@ func (server *Server) createURL(body []byte) (string, bool) {
 	return hash, true
 }
 
-func (server *Server) getURL(id string) (string, bool) {
-	fullURL, err := server.Cache.GetURL(id)
+func (server *Server) getURL(hash string) (string, bool) {
+	fullURL, err := server.Cache.GetURL(hash)
 	if err == nil {
 		return fullURL, true
 	}
 
-	log.Println(err)
-
-	fullURL, err = server.Database.GetURL(id)
+	fullURL, err = server.Database.GetURL(hash)
 	if err == nil {
-		err = server.Cache.AddURL(id, fullURL)
+		err = server.Cache.AddURL(hash, fullURL)
 		if err != nil {
 			log.Print(err)
 
