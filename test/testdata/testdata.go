@@ -3,8 +3,8 @@
 package testdata
 
 import (
-	"encoding/json"
 	_ "embed"
+	"encoding/json"
 
 	"github.com/timkral5/url_shortener/internal/log"
 )

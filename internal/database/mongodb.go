@@ -4,14 +4,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/timkral5/url_shortener/internal/log"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type urlEntry struct {
-	Hash string `bson:"hash"`
+	Hash    string `bson:"hash"`
 	FullURL string `bson:"url"`
 }
 
@@ -22,11 +21,11 @@ type MongoDBConnection struct {
 	URLCollectionName string
 
 	ConnectTimeout time.Duration
-	AddURLTimeout time.Duration
-	GetURLTimeout time.Duration
+	AddURLTimeout  time.Duration
+	GetURLTimeout  time.Duration
 
-	client            *mongo.Client
-	urlCollection     *mongo.Collection
+	client        *mongo.Client
+	urlCollection *mongo.Collection
 }
 
 var _ Connection = (*MongoDBConnection)(nil)
@@ -39,10 +38,10 @@ func NewMongoDBConnection(connStr string, timeout time.Duration) (*MongoDBConnec
 		URLCollectionName: "urls",
 
 		ConnectTimeout: timeout,
-		AddURLTimeout: timeout,
-		GetURLTimeout: timeout,
+		AddURLTimeout:  timeout,
+		GetURLTimeout:  timeout,
 
-		client: nil,
+		client:        nil,
 		urlCollection: nil,
 	}
 
@@ -59,23 +58,16 @@ func NewMongoDBConnection(connStr string, timeout time.Duration) (*MongoDBConnec
 	return conn, nil
 }
 
-
-
 // Connect establishes a new connection using the provided connection
 // string.
 func (conn *MongoDBConnection) Connect(connStr string) error {
 	conn.ConnectionString = connStr
 
-	log.Log(connStr)
-
 	client, err := mongo.Connect(options.Client().
 		ApplyURI(connStr).
 		SetConnectTimeout(conn.ConnectTimeout))
 	if err != nil {
-		return Error{
-			Message: err.Error(),
-			Code:    FakeConnectError,
-		}
+		return NewMongoDBConnectError(err)
 	}
 
 	conn.client = client
@@ -87,10 +79,11 @@ func (conn *MongoDBConnection) Connect(connStr string) error {
 }
 
 // SetupDatabase initializes the database, the collections and the
-// indeces.
+// indices.
 func (conn *MongoDBConnection) SetupDatabase() error {
 	urlHashIndex := mongo.IndexModel{
-		Keys: bson.D{ bson.E{ Key: "hash", Value: 1 } },
+		Keys:    bson.D{bson.E{Key: "hash", Value: 1}},
+		Options: nil,
 	}
 
 	_, err := conn.urlCollection.Indexes().CreateOne(context.TODO(), urlHashIndex)
@@ -111,22 +104,12 @@ func (conn *MongoDBConnection) AddURL(hash string, url string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), conn.AddURLTimeout)
 	defer cancel()
 
-	result, err := conn.urlCollection.InsertOne(ctx, urlEntry{
-		Hash: hash,
+	_, err := conn.urlCollection.InsertOne(ctx, urlEntry{
+		Hash:    hash,
 		FullURL: url,
 	})
 	if err != nil {
-		return Error{
-			Message: err.Error(),
-			Code: FakeConnectError,
-		}
-	}
-
-	if !result.Acknowledged {
-		return Error{
-			Message: "Failed to add URL (not aknowledged)",
-			Code: FakeConnectError,
-		}
+		return NewMongoDBInsertError(err)
 	}
 
 	return nil
@@ -149,7 +132,11 @@ func (conn *MongoDBConnection) GetURL(hash string) (string, error) {
 	}
 
 	var entry urlEntry
-	result.Decode(&entry)
+
+	err = result.Decode(&entry)
+	if err != nil {
+		return "", err
+	}
 
 	return entry.FullURL, nil
 }

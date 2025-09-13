@@ -1,16 +1,5 @@
 package database
 
-const (
-	// FakeConnectError is the code for a failed connection.
-	FakeConnectError = iota
-	// FakeDisconnectError is the code for a failed termination of a
-	// connection.
-	FakeDisconnectError
-	// FakeGetError is the error that occurs when fetching an entry
-	// fails.
-	FakeGetError
-)
-
 // FakeDatabaseConnection is a mock database connection for testing.
 type FakeDatabaseConnection struct {
 	FailConnect    bool
@@ -31,10 +20,7 @@ func NewFakeDatabaseConnection() *FakeDatabaseConnection {
 // behaviour can be controlled using the FailConnect property.
 func (conn *FakeDatabaseConnection) Connect(_ string) error {
 	if conn.FailConnect {
-		return Error{
-			Message: "Could not connect.",
-			Code:    FakeConnectError,
-		}
+		return NewFakeConnectError()
 	}
 
 	return nil
@@ -44,31 +30,25 @@ func (conn *FakeDatabaseConnection) Connect(_ string) error {
 // can be controlled using the FailDisconnect property.
 func (conn *FakeDatabaseConnection) Disconnect() error {
 	if conn.FailDisconnect {
-		return Error{
-			Message: "Could not disconnect.",
-			Code:    FakeDisconnectError,
-		}
+		return NewFakeDisconnectError()
 	}
 
 	return nil
 }
 
 // AddURL emulates the creation of a new entry in the database.
-func (conn *FakeDatabaseConnection) AddURL(short string, full string) error {
-	conn.URLs[short] = full
+func (conn *FakeDatabaseConnection) AddURL(hash string, url string) error {
+	conn.URLs[hash] = url
 
 	return nil
 }
 
 // GetURL emulates fetching a URL from its hash.
-func (conn *FakeDatabaseConnection) GetURL(short string) (string, error) {
-	entry := conn.URLs[short]
+func (conn *FakeDatabaseConnection) GetURL(hash string) (string, error) {
+	entry := conn.URLs[hash]
 
 	if entry == "" {
-		return "", Error{
-			Message: "Could not fetch resource.",
-			Code:    FakeGetError,
-		}
+		return "", NewFakeNotFoundError(hash)
 	}
 
 	return entry, nil

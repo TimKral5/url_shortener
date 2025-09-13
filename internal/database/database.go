@@ -2,12 +2,6 @@
 // project.
 package database
 
-// Error is a container for all database related errors.
-type Error struct {
-	Message string
-	Code    int
-}
-
 // Connection is an interface all implementations of a database
 // wrapper have to comply with.
 type Connection interface {
@@ -15,9 +9,4 @@ type Connection interface {
 	Disconnect() error
 	AddURL(short string, full string) error
 	GetURL(short string) (string, error)
-}
-
-// Error returns the error message.
-func (err Error) Error() string {
-	return err.Message
 }
