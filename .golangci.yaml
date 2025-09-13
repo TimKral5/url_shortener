@@ -13,6 +13,7 @@ linters:
           allow:
             - $gostd
             - github.com/timkral5
+            - go.mongodb.org/mongo-driver/v2
     funlen:
       lines: 30
     tagliatelle:

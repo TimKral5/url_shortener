@@ -129,7 +129,7 @@ func (server *Server) createURL(body []byte) (string, bool) {
 
 	hash := strings.ToUpper(hash.GenerateSHA256Hex(requestData.URL))
 
-	err = server.Database.AddURL(hash, requestData.URL)	
+	err = server.Database.AddURL(hash, requestData.URL)
 	if err != nil {
 		log.Println(err)
 

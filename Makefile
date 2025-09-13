@@ -4,23 +4,26 @@ GO_FILES = $$(find . -name '*.go')
 GO_MODULES_CMD = $$(for i in $$(ls -1 ./cmd); do echo ./cmd/$$i; done)
 GO_MODULES_PKG = $$(for i in $$(ls -1 ./pkg); do echo ./pkg/$$i; done)
 GO_MODULES_INTERNAL = $$(for i in $$(ls -1 ./internal); do echo ./internal/$$i; done)
+GO_MODULES_TEST = $$(for i in $$(ls -1 ./test); do echo ./test/$$i; done)
 GO_MODULES = $(GO_MODULES_CMD) $(GO_MODULES_PKG) $(GO_MODULES_INTERNAL)
 
 h: help
 help:
 	@echo "Available targets:"
-	@echo "   h, help    Show this prompt."
-	@echo "   g, godoc   Launch documenation server."
-	@echo "   m, mkdocs  Launch documenation server."
-	@echo "   b, build   Build the project and its executables."
-	@echo "   t, test    Run all tests of the project."
-	@echo "   l, lint    Run the linter on all project files."
-	@echo "   r, run     Launch the url_shortener executable."
-	@echo "   f, format  Format all .go files in the project."
-	@echo "   s, stats   Show repository stats."
-	@echo "   c, clean   Clean up all generated files."
+	@echo "   h, help         Show this prompt."
+	@echo "   g, godoc        Launch documenation server."
+	@echo "   m, mkdocs       Launch documenation server."
+	@echo "   b, build        Build the project and its executables."
+	@echo "   t, test         Run all unit tests of the project."
+	@echo "   bm, benchmark   Run all benchmarks of the project."
+	@echo "   i, integration  Run all integration tests of the project."
+	@echo "   l, lint         Run the linter on all project files."
+	@echo "   r, run          Launch the url_shortener executable."
+	@echo "   f, format       Format all .go files in the project."
+	@echo "   s, stats        Show repository stats."
+	@echo "   c, clean        Clean up all generated files."
 
-.PHONY: h help g godoc m mkdoc b build t test l lint r run f format s stats _clean c clean coverage
+.PHONY: h help g godoc m mkdoc b build t test bm benchmark l lint r run f format s stats _clean c clean coverage
 
 g: godoc
 godoc:
@@ -36,8 +39,17 @@ build: url_shortener
 
 t: test
 test:
-	-@go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
+	@#go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
+	-@go test -v -coverprofile "coverage.out" $(GO_MODULES)
 	-@go tool cover -html "coverage.out" -o "coverage.html"
+
+bm: benchmark
+benchmark:
+	-@go test -v -bench=. '-run=^$$' $(GO_MODULES)
+
+i: integration
+integration:
+	@set -a; source ./.env; set +a; go test -v -bench=. $(GO_MODULES_TEST)
 
 l: lint
 lint:
