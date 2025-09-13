@@ -19,8 +19,8 @@ func NewFakeConnectError() *FakeConnectError {
 	file = file[len(root):]
 
 	return &FakeConnectError{
-		File:       file,
-		Line:       line,
+		File: file,
+		Line: line,
 	}
 }
 
@@ -45,8 +45,8 @@ func NewFakeDisconnectError() *FakeDisconnectError {
 	file = file[len(root):]
 
 	return &FakeDisconnectError{
-		File:       file,
-		Line:       line,
+		File: file,
+		Line: line,
 	}
 }
 
@@ -73,8 +73,8 @@ func NewFakeNotFoundError(hash string) *FakeNotFoundError {
 
 	return &FakeNotFoundError{
 		Hash: hash,
-		File:       file,
-		Line:       line,
+		File: file,
+		Line: line,
 	}
 }
 

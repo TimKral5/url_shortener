@@ -31,6 +31,8 @@ func TestAddURL(t *testing.T) {
 	data := testdata.ReadStaticTestData()
 
 	for hash, url := range data.TestURLs {
+		hash = hash[:10]
+
 		t.Log("Adding URL", url, "with hash", hash, "...")
 
 		err := conn.AddURL(hash, url)
@@ -48,6 +50,8 @@ func TestGetURL(t *testing.T) {
 	data := testdata.ReadStaticTestData()
 
 	for hash, url := range data.TestURLs {
+		hash = hash[:10]
+
 		t.Log("Fetching URL for hash", hash, "...")
 
 		result, err := conn.GetURL(hash)

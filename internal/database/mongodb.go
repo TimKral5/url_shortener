@@ -88,7 +88,7 @@ func (conn *MongoDBConnection) SetupDatabase() error {
 
 	_, err := conn.urlCollection.Indexes().CreateOne(context.TODO(), urlHashIndex)
 	if err != nil {
-		return err
+		return NewMongoDBConnectError(err)
 	}
 
 	return nil
@@ -96,7 +96,12 @@ func (conn *MongoDBConnection) SetupDatabase() error {
 
 // Disconnect terminates an active connection.
 func (conn *MongoDBConnection) Disconnect() error {
-	return conn.client.Disconnect(context.Background())
+	err := conn.client.Disconnect(context.Background())
+	if err != nil {
+		return NewMongoDBDisconnectError(err)
+	}
+
+	return nil
 }
 
 // AddURL inserts a new URL entry into the database.
@@ -128,14 +133,14 @@ func (conn *MongoDBConnection) GetURL(hash string) (string, error) {
 
 	err := result.Err()
 	if err != nil {
-		return "", err
+		return "", NewMongoDBFetchError(err)
 	}
 
 	var entry urlEntry
 
 	err = result.Decode(&entry)
 	if err != nil {
-		return "", err
+		return "", NewMongoDBFetchError(err)
 	}
 
 	return entry.FullURL, nil

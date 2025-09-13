@@ -4,7 +4,6 @@ package server
 
 import (
 	"io"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -13,27 +12,31 @@ import (
 	"github.com/timkral5/url_shortener/internal/cache"
 	"github.com/timkral5/url_shortener/internal/database"
 	"github.com/timkral5/url_shortener/internal/hash"
+	"github.com/timkral5/url_shortener/internal/log"
 	"github.com/timkral5/url_shortener/pkg/api"
 )
 
+const shortURLDefaultLength int = 10
 const requestTimeout time.Duration = 10 * time.Second
 const maxHeaderSize = 4096
 
 // Server is the wrapper for the main HTTP server.
 type Server struct {
-	server   *http.Server
-	Database database.Connection
-	Cache    cache.Connection
-	Auth     auth.Connection
+	server         *http.Server
+	Database       database.Connection
+	Cache          cache.Connection
+	Auth           auth.Connection
+	ShortURLLength int
 }
 
 // NewServer constructs a new shortener API instance.
-func NewServer() Server {
-	server := Server{
-		server:   nil,
-		Database: nil,
-		Cache:    nil,
-		Auth:     nil,
+func NewServer() *Server {
+	server := &Server{
+		server:         nil,
+		Database:       nil,
+		Cache:          nil,
+		Auth:           nil,
+		ShortURLLength: shortURLDefaultLength,
 	}
 
 	return server
@@ -43,7 +46,7 @@ func NewServer() Server {
 func (server *Server) CreateURLRoute(writer http.ResponseWriter, request *http.Request) {
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		log.Println(err)
+		log.Error("Read request body:", err)
 		writer.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -61,7 +64,7 @@ func (server *Server) CreateURLRoute(writer http.ResponseWriter, request *http.R
 
 	json, err := response.DumpJSON()
 	if err != nil {
-		log.Println(err)
+		log.Error("Constructing response:", err)
 		writer.WriteHeader(http.StatusInternalServerError)
 
 		return
@@ -113,8 +116,17 @@ func (server *Server) SetupRoutes() *http.ServeMux {
 func (server *Server) Listen(addr string) bool {
 	server.configureServer(addr)
 	err := server.server.ListenAndServe()
+	log.Error(err)
 
 	return err == nil
+}
+
+func (server *Server) trimHash(hash string) string {
+	if len(hash) >= server.ShortURLLength {
+		return hash[:server.ShortURLLength]
+	}
+
+	return hash
 }
 
 func (server *Server) createURL(body []byte) (string, bool) {
@@ -122,16 +134,17 @@ func (server *Server) createURL(body []byte) (string, bool) {
 
 	err := requestData.LoadJSON(body)
 	if err != nil {
-		log.Println(err)
+		log.Error("Parsing request JSON:", err)
 
 		return "", false
 	}
 
 	hash := strings.ToUpper(hash.GenerateSHA256Hex(requestData.URL))
+	hash = server.trimHash(hash)
 
 	err = server.Database.AddURL(hash, requestData.URL)
 	if err != nil {
-		log.Println(err)
+		log.Error("Adding URL to database:", err)
 
 		return "", false
 	}
@@ -140,16 +153,20 @@ func (server *Server) createURL(body []byte) (string, bool) {
 }
 
 func (server *Server) getURL(hash string) (string, bool) {
+	hash = server.trimHash(hash)
+
 	fullURL, err := server.Cache.GetURL(hash)
 	if err == nil {
 		return fullURL, true
 	}
 
+	log.Warn("Fetching URL from cache", err)
+
 	fullURL, err = server.Database.GetURL(hash)
 	if err == nil {
 		err = server.Cache.AddURL(hash, fullURL)
 		if err != nil {
-			log.Print(err)
+			log.Error("Adding URL to cache:", err)
 
 			return "", false
 		}
@@ -157,7 +174,7 @@ func (server *Server) getURL(hash string) (string, bool) {
 		return fullURL, true
 	}
 
-	log.Println(err)
+	log.Error("Fetching URL from database:", err)
 
 	return "", false
 }
@@ -168,7 +185,7 @@ func (server *Server) configureServer(addr string) {
 		ReadHeaderTimeout:            requestTimeout,
 		IdleTimeout:                  requestTimeout,
 		Addr:                         addr,
-		Handler:                      server.SetupRoutes(),
+		Handler:                      log.Middleware(server.SetupRoutes()),
 		DisableGeneralOptionsHandler: true,
 		TLSConfig:                    nil,
 		WriteTimeout:                 requestTimeout,

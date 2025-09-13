@@ -10,20 +10,86 @@ GO_MODULES = $(GO_MODULES_CMD) $(GO_MODULES_PKG) $(GO_MODULES_INTERNAL)
 h: help
 help:
 	@echo "Available targets:"
-	@echo "   h, help         Show this prompt."
-	@echo "   g, godoc        Launch documenation server."
-	@echo "   m, mkdocs       Launch documenation server."
-	@echo "   b, build        Build the project and its executables."
-	@echo "   t, test         Run all unit tests of the project."
-	@echo "   bm, benchmark   Run all benchmarks of the project."
-	@echo "   i, integration  Run all integration tests of the project."
-	@echo "   l, lint         Run the linter on all project files."
-	@echo "   r, run          Launch the url_shortener executable."
-	@echo "   f, format       Format all .go files in the project."
-	@echo "   s, stats        Show repository stats."
-	@echo "   c, clean        Clean up all generated files."
+	@echo
+	@echo "General:"
+	@echo "   h,   help         Show this prompt."
+	@echo "   c,   clean        Clean up all generated files."
+	@echo
+	@echo "Deployment:"
+	@echo "   b,  build         Build the project and its executables."
+	@echo "   bd, docker-build  Build the docker container."
+	@echo "   cu, compose-up    Launch the compose configuration for production."
+	@echo "   cd, compose-down  Terminate the compose configuration for production."
+	@echo "   du, dev-up        Launch the compose configuration for development."
+	@echo "   dd, dev-down      Terminate the compose configuration for development."
+	@echo
+	@echo "Documentation:"
+	@echo "   g,   godoc        Launch documenation server."
+	@echo "   m,   mkdocs       Launch documenation server."
+	@echo
+	@echo "Tests:"
+	@echo "   t,   test         Run all unit tests of the project."
+	@echo "   bm,  benchmarks   Run all benchmarks of the project."
+	@echo "   i,   integration  Run all integration tests of the project."
+	@echo
+	@echo "Code Quality:"
+	@echo "   l,   lint         Run the linter on all project files."
+	@echo "   f,   format       Format all .go files in the project."
+	@echo
+	@echo "Development:"
+	@echo "   r,   run          Launch the url_shortener executable."
+	@echo "   s,   stats        Show repository stats."
 
-.PHONY: h help g godoc m mkdoc b build t test bm benchmark l lint r run f format s stats _clean c clean coverage
+.PHONY: \
+	h help \
+	c clean \
+	b build \
+	bd docker-build \
+	cu compose-up \
+	cd compose-down \
+	du dev-up \
+	dd dev-down \
+	g godoc \
+	m mkdocs \
+	t test \
+	bm benchmarks \
+	i integration \
+	l lint \
+	f format \
+	r run \
+	s stats
+
+_clean:
+	@echo -e '\033[0;33m== Cleanup Script ==\033[0m'
+c: clean
+clean: _clean _url_shortener _coverage.html _coverage.out
+
+b: build
+build: url_shortener
+
+url_shortener:
+	@echo ''
+	go build ./cmd/url_shortener
+
+bd: docker-build
+docker-build:
+	@docker build -t ghcr.io/timkral5/url_shortener .
+
+cu: compose-up
+compose-up:
+	@docker compose up -d --build
+
+cd: compose-down
+compose-down:
+	@docker compose down
+
+du: dev-up
+dev-up:
+	@docker compose -f dev.compose.yaml up -d
+
+dd: dev-down
+dev-down:
+	@docker compose -f dev.compose.yaml down
 
 g: godoc
 godoc:
@@ -34,17 +100,14 @@ m: mkdocs
 mkdocs:
 	@mkdocs serve -a 0.0.0.0:3005
 
-b: build
-build: url_shortener
-
 t: test
 test:
 	@#go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
 	-@go test -v -coverprofile "coverage.out" $(GO_MODULES)
 	-@go tool cover -html "coverage.out" -o "coverage.html"
 
-bm: benchmark
-benchmark:
+bm: benchmarks
+benchmarks:
 	-@go test -v -bench=. '-run=^$$' $(GO_MODULES)
 
 i: integration
@@ -55,14 +118,6 @@ l: lint
 lint:
 	golangci-lint run
 
-r: run
-run:
-	go run ./cmd/url_shortener
-
-url_shortener:
-	@echo ''
-	go build ./cmd/url_shortener
-
 f: format
 format:
 	@echo 'Formatting...'
@@ -71,6 +126,10 @@ format:
 		go fmt "$$i";\
 	done
 	@echo 'done.'
+
+r: run
+run:
+	@set -a; source ./.env; set +a; go run ./cmd/url_shortener
 
 s: stats
 stats:
@@ -86,10 +145,3 @@ _url_shortener _coverage.html _coverage.out:
 		echo -e '\033[0;31malready removed.\033[0m';:
 	@[ -f "$(RM_TARGET)" ] &&\
 		rm "$(RM_TARGET)" && echo -e '\033[0;32mdone.\033[0m';:
-
-_clean:
-	@echo -e '\033[0;33m== Cleanup Script ==\033[0m'
-c: clean
-
-clean: _clean _url_shortener _coverage.html _coverage.out
-
