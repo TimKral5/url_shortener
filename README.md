@@ -35,8 +35,6 @@ Deployment:
    bd, docker-build  Build the docker container.
    cu, compose-up    Launch the compose configuration for production.
    cd, compose-down  Terminate the compose configuration for production.
-   du, dev-up        Launch the compose configuration for development.
-   dd, dev-down      Terminate the compose configuration for development.
 
 Documentation:
    g,   godoc        Launch documenation server.
@@ -53,6 +51,8 @@ Code Quality:
 
 Development:
    r,   run          Launch the url_shortener executable.
+   du, dev-up        Launch the compose configuration for development.
+   dd, dev-down      Terminate the compose configuration for development.
    s,   stats        Show repository stats.
 ```
 

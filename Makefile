@@ -20,8 +20,6 @@ help:
 	@echo "   bd, docker-build  Build the docker container."
 	@echo "   cu, compose-up    Launch the compose configuration for production."
 	@echo "   cd, compose-down  Terminate the compose configuration for production."
-	@echo "   du, dev-up        Launch the compose configuration for development."
-	@echo "   dd, dev-down      Terminate the compose configuration for development."
 	@echo
 	@echo "Documentation:"
 	@echo "   g,   godoc        Launch documenation server."
@@ -38,6 +36,8 @@ help:
 	@echo
 	@echo "Development:"
 	@echo "   r,   run          Launch the url_shortener executable."
+	@echo "   du, dev-up        Launch the compose configuration for development."
+	@echo "   dd, dev-down      Terminate the compose configuration for development."
 	@echo "   s,   stats        Show repository stats."
 
 .PHONY: \
@@ -47,8 +47,6 @@ help:
 	bd docker-build \
 	cu compose-up \
 	cd compose-down \
-	du dev-up \
-	dd dev-down \
 	g godoc \
 	m mkdocs \
 	t test \
@@ -57,6 +55,8 @@ help:
 	l lint \
 	f format \
 	r run \
+	du dev-up \
+	dd dev-down \
 	s stats
 
 _clean:
@@ -82,14 +82,6 @@ compose-up:
 cd: compose-down
 compose-down:
 	@docker compose down
-
-du: dev-up
-dev-up:
-	@docker compose -f dev.compose.yaml up -d
-
-dd: dev-down
-dev-down:
-	@docker compose -f dev.compose.yaml down
 
 g: godoc
 godoc:
@@ -130,6 +122,14 @@ format:
 r: run
 run:
 	@set -a; source ./.env; set +a; go run ./cmd/url_shortener
+
+du: dev-up
+dev-up:
+	@docker compose -f dev.compose.yaml up -d
+
+dd: dev-down
+dev-down:
+	@docker compose -f dev.compose.yaml down
 
 s: stats
 stats:
