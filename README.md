@@ -62,7 +62,11 @@ Development:
 
 ## License
 
-> **TODO**
+This product is distributed under the GPLv2 license. Therefore, it is
+provided with the freedom of usage under very lax restrictions. In
+turn, it comes without any warranty.
+
+Refer to the [LICENSE](./LICENSE) file for more information.
 
 ## Contacts
 
