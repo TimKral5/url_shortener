@@ -7,6 +7,8 @@ type FakeDatabaseConnection struct {
 	URLs           map[string]string
 }
 
+var _ Connection = (*FakeDatabaseConnection)(nil)
+
 // NewFakeDatabaseConnection constructs a fake database connection.
 func NewFakeDatabaseConnection() *FakeDatabaseConnection {
 	return &FakeDatabaseConnection{

@@ -14,6 +14,8 @@ type MongoDBConnectError struct {
 	Line       int
 }
 
+var _ error = (*MongoDBConnectError)(nil)
+
 // NewMongoDBConnectError constructs a new MongoDB connect error.
 func NewMongoDBConnectError(inner error) *MongoDBConnectError {
 	_, file, line, _ := runtime.Caller(1)
@@ -42,6 +44,8 @@ type MongoDBDisconnectError struct {
 	File       string
 	Line       int
 }
+
+var _ error = (*MongoDBDisconnectError)(nil)
 
 // NewMongoDBDisconnectError constructs a new MongoDB connect error.
 func NewMongoDBDisconnectError(inner error) *MongoDBDisconnectError {
@@ -72,6 +76,8 @@ type MongoDBInsertError struct {
 	Line       int
 }
 
+var _ error = (*MongoDBInsertError)(nil)
+
 // NewMongoDBInsertError constructs a new MongoDB insert error.
 func NewMongoDBInsertError(inner error) *MongoDBInsertError {
 	_, file, line, _ := runtime.Caller(1)
@@ -100,6 +106,8 @@ type MongoDBFetchError struct {
 	File       string
 	Line       int
 }
+
+var _ error = (*MongoDBFetchError)(nil)
 
 // NewMongoDBFetchError constructs a new MongoDB fetch error.
 func NewMongoDBFetchError(inner error) *MongoDBFetchError {

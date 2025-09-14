@@ -19,8 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented client library for the API.
 - Set up documentation through MkDocs.
 
-## Edited
+### Edited
 
-## Fixed
+### Fixed
 
-## Removed
+### Removed

@@ -1,22 +1,13 @@
 package cache
 
-const (
-	// FakeConnectError is the code for a failed connection.
-	FakeConnectError = iota
-	// FakeDisconnectError is the code for a failed termination of a
-	// connection.
-	FakeDisconnectError
-	// FakeGetError is the error that occurs when fetching an entry
-	// fails.
-	FakeGetError
-)
-
 // FakeCacheConnection is a mock cache connection for testing.
 type FakeCacheConnection struct {
 	FailConnect    bool
 	FailDisconnect bool
 	URLs           map[string]string
 }
+
+var _ Connection = (*FakeCacheConnection)(nil)
 
 // NewFakeCacheConnection constructs a new fake cache connection.
 func NewFakeCacheConnection() *FakeCacheConnection {
@@ -31,10 +22,7 @@ func NewFakeCacheConnection() *FakeCacheConnection {
 // can be controlled using the FailConnect property.
 func (conn *FakeCacheConnection) Connect(_ string) error {
 	if conn.FailConnect {
-		return Error{
-			Message: "Could not connect.",
-			Code:    FakeConnectError,
-		}
+		return NewFakeConnectError()
 	}
 
 	return nil
@@ -44,31 +32,25 @@ func (conn *FakeCacheConnection) Connect(_ string) error {
 // can be controlled using the FailDisconnect property.
 func (conn *FakeCacheConnection) Disconnect() error {
 	if conn.FailDisconnect {
-		return Error{
-			Message: "Could not disconnect.",
-			Code:    FakeDisconnectError,
-		}
+		return NewFakeDisconnectError()
 	}
 
 	return nil
 }
 
 // AddURL emulates the creation of a new entry in the cache.
-func (conn *FakeCacheConnection) AddURL(short string, full string) error {
-	conn.URLs[short] = full
+func (conn *FakeCacheConnection) AddURL(hash string, url string) error {
+	conn.URLs[hash] = url
 
 	return nil
 }
 
 // GetURL emulates fetching a URL from its hash.
-func (conn *FakeCacheConnection) GetURL(short string) (string, error) {
-	entry := conn.URLs[short]
+func (conn *FakeCacheConnection) GetURL(hash string) (string, error) {
+	entry := conn.URLs[hash]
 
 	if entry == "" {
-		return "", Error{
-			Message: "Could not fetch resource.",
-			Code:    FakeGetError,
-		}
+		return "", NewFakeNotFoundError(hash)
 	}
 
 	return entry, nil

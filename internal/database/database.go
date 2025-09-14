@@ -7,6 +7,6 @@ package database
 type Connection interface {
 	Connect(connStr string) error
 	Disconnect() error
-	AddURL(short string, full string) error
-	GetURL(short string) (string, error)
+	AddURL(hash string, url string) error
+	GetURL(hash string) (string, error)
 }

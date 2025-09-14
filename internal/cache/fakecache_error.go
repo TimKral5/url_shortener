@@ -1,4 +1,4 @@
-package database
+package cache
 
 import (
 	"path"
@@ -29,7 +29,7 @@ func NewFakeConnectError() *FakeConnectError {
 // Error returns the error's message.
 func (err FakeConnectError) Error() string {
 	location := err.File + ", " + strconv.Itoa(err.Line) + ": "
-	message := "Failed to connect to database."
+	message := "Failed to connect to cache."
 
 	return location + message
 }
@@ -57,7 +57,7 @@ func NewFakeDisconnectError() *FakeDisconnectError {
 // Error returns the error's message.
 func (err FakeDisconnectError) Error() string {
 	location := err.File + ", " + strconv.Itoa(err.Line) + ": "
-	message := "Failed to disconnect from database."
+	message := "Failed to disconnect from cache."
 
 	return location + message
 }
