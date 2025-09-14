@@ -1,18 +1,25 @@
 <h1 align="center">URL Shortener</h1>
 
-<div align="center">
+<!--
+   # run this to regenerate badges.
+   echo -E "$(./badge-gen.sh)" > README.md
+-->
 
-![License Information Badge](https://img.shields.io/github/license/timkral5/url_shortener?logo=github&label=License&color=blue)
-![Latest Release Version Badge](https://img.shields.io/github/v/release/timkral5/url_shortener?logo=github&label=Latest%20Version&color=blue&include_prereleases)
+<div align="center">
+<!-- {{badges:start}} -->
+
+![License Information](https://img.shields.io/github/license/timkral5/url_shortener?logo=github&label=License)
+![Latest Release](https://img.shields.io/github/v/release/timkral5/url_shortener?logo=github&label=Latest%20Release&color=blue&include_prereleases)
 ![Master Branch Status](https://img.shields.io/github/check-runs/timkral5/url_shortener/master?logo=github&label=Master%20Status)
 ![Development Branch Status](https://img.shields.io/github/check-runs/timkral5/url_shortener/development?logo=github&label=Development%20Status)
-[![Master Last Commit Badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/master?label=Last%20Commit%20-%20Master&logo=git&color=blue)](https://github.com/TimKral5/url_shortener)
-[![Development Last Commit Badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/development?label=Last%20Commit%20-%20Development&logo=git&color=red)](https://github.com/TimKral5/url_shortener/tree/development)
+![Master Last Commit](https://img.shields.io/github/last-commit/timkral5/url_shortener/master?logo=git&color=blue&label=Last%20Commit%20-%20Master)
+![Development Last Commit](https://img.shields.io/github/last-commit/timkral5/url_shortener/development?logo=git&color=red&label=Last%20Commit%20-%20Development)
 [![Go Version](https://img.shields.io/badge/Go_Version-1.24.5-deepskyblue?logo=go)](https://go.dev)
-[![Docker Version](https://img.shields.io/badge/Docker_Version-18.3.3-deepskyblue?logo=docker)](https://docker.com)
+[![Docker Version](https://img.shields.io/badge/Docker_Version-1.24.5-deepskyblue?logo=docker)](https://docker.com)
 ![Operating Systems Badge](https://img.shields.io/badge/OS-linux%20%7C%20windows-blue?style=flat&logo=Linux&logoColor=b0c0c0)
 ![Architectures Badge](https://img.shields.io/badge/CPU-x86%20%7C%20x86__64%20-blue?style=flat&logo=amd&logoColor=b0c0c0)
 
+<!-- {{badges:end}} -->
 </div>
 
 <p align="center">
