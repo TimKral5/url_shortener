@@ -8,21 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Implemented RestAPI with environments for configuration.
-- Implemented create route for shortening URLs (JSON).
-- Implemented fetch route for retreiving shortened URLs (JSON).
-- Implemented fetch route for retreiving shortened URLs (redirect).
-- Implemented logging for all routes.
-- Implemented unit tests.
-- Implemented integration tests.
-- Implemented Docker support.
-- Implemented client library for the API.
-- Set up documentation through MkDocs.
-- Add databaase support for MongoDB.
+- Implement RestAPI with environments for configuration.
+- Implement create route for shortening URLs (JSON).
+- Implement fetch route for retreiving shortened URLs (JSON).
+- Implement fetch route for retreiving shortened URLs (redirect).
+- Implement logging for all routes.
+- Add database support for MongoDB.
 - Add cached support for Memcached.
-
-### Edited
-
-### Fixed
-
-### Removed
+- Implement unit tests.
+- Implement integration tests.
+- Set up documentation through MkDocs.
+- Implement Docker support.
+- Implement client library for the API.
