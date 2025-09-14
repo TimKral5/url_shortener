@@ -3,7 +3,9 @@
 <div align="center">
 
 ![License Information Badge](https://img.shields.io/github/license/timkral5/url_shortener?logo=github&label=License&color=blue)
-![Latest Release Version Badge](https://img.shields.io/github/v/tag/timkral5/url_shortener?logo=github&label=Latest%20Version&color=blue)
+![Latest Release Version Badge](https://img.shields.io/github/v/release/timkral5/url_shortener?logo=github&label=Latest%20Version&color=blue&include_prereleases)
+![Master Branch Status](https://img.shields.io/github/check-runs/timkral5/url_shortener/master?logo=github&label=Master%20Status)
+![Development Branch Status](https://img.shields.io/github/check-runs/timkral5/url_shortener/development?logo=github&label=Development%20Status)
 [![Master Last Commit Badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/master?label=Last%20Commit%20-%20Master&logo=git&color=blue)](https://github.com/TimKral5/url_shortener)
 [![Development Last Commit Badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/development?label=Last%20Commit%20-%20Development&logo=git&color=red)](https://github.com/TimKral5/url_shortener/tree/development)
 [![Go Version](https://img.shields.io/badge/Go_Version-1.24.5-deepskyblue?logo=go)](https://go.dev)
