@@ -37,17 +37,7 @@ func TestAPIEndpoints(t *testing.T) {
 }
 
 func BenchmarkGetURL(b *testing.B) {
-	server = _server.NewServer()
-
-	cache.NewFakeCacheConnection()
-
-	server.Database = database.NewFakeDatabaseConnection()
-	server.Cache = cache.NewFakeCacheConnection()
-
-	mock = httptest.NewUnstartedServer(server.SetupRoutes())
-
-	mock.Start()
-	defer mock.Close()
+	setupBenchmarkEnvironment()
 
 	api := _api.NewClient()
 	api.Bind(mock.URL)
@@ -69,6 +59,20 @@ func BenchmarkGetURL(b *testing.B) {
 			return
 		}
 	}
+}
+
+func setupBenchmarkEnvironment() {
+	server = _server.NewServer()
+
+	cache.NewFakeCacheConnection()
+
+	server.Database = database.NewFakeDatabaseConnection()
+	server.Cache = cache.NewFakeCacheConnection()
+
+	mock = httptest.NewUnstartedServer(server.SetupRoutes())
+
+	mock.Start()
+	defer mock.Close()
 }
 
 func testAddURL(t *testing.T) {

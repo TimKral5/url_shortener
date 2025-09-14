@@ -183,13 +183,11 @@ func (server *Server) getURL(hash string) (string, bool) {
 		return fullURL, true
 	}
 
-	log.Warn("Fetching URL from cache", err)
-
 	fullURL, err = server.Database.GetURL(hash)
 	if err == nil {
 		err = server.Cache.AddURL(hash, fullURL)
 		if err != nil {
-			log.Error("Adding URL to cache:", err)
+			log.Error("Failed to add URL to cache:", err)
 
 			return "", false
 		}
@@ -197,7 +195,7 @@ func (server *Server) getURL(hash string) (string, bool) {
 		return fullURL, true
 	}
 
-	log.Error("Fetching URL from database:", err)
+	log.Error("Failed to fetch URL from database:", err)
 
 	return "", false
 }
