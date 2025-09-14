@@ -65,11 +65,11 @@ c: clean
 clean: _clean _url_shortener _coverage.html _coverage.out
 
 b: build
-build: url_shortener
-
-url_shortener:
-	@echo ''
-	go build ./cmd/url_shortener
+build:
+	env GOOS=linux GOARCH=386 go build ./cmd/url_shortener; mv url_shortener url_shortener-linux-386
+	env GOOS=linux GOARCH=amd64 go build ./cmd/url_shortener; mv url_shortener url_shortener-linux-amd64
+	env GOOS=windows GOARCH=386 go build ./cmd/url_shortener; mv url_shortener.exe url_shortener-windows-386.exe
+	env GOOS=windows GOARCH=amd64 go build ./cmd/url_shortener; mv url_shortener.exe url_shortener-windows-amd64.exe
 
 bd: docker-build
 docker-build:
