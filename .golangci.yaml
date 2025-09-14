@@ -1,0 +1,28 @@
+version: "2"
+linters:
+  default: all
+  enable:
+    - wsl_v5
+  disable:
+    - wsl
+    - paralleltest
+  settings:
+    depguard:
+      rules:
+        main:
+          allow:
+            - $gostd
+            - github.com/timkral5
+            - go.mongodb.org/mongo-driver/v2
+            - github.com/bradfitz/gomemcache
+    funlen:
+      lines: 30
+    tagliatelle:
+      case:
+        rules:
+          json: snake
+  exclusions:
+    rules:
+      - path: ".*_test\\.go$"
+        linters:
+          - gochecknoglobals

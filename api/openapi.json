@@ -1,0 +1,181 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v0.1.0",
+    "title": "URL Shortener",
+    "license": {
+      "name": "GPLv2",
+      "url": "https://github.com/timkral5/url_shortener"
+    }
+  },
+  "paths": {
+    "/v0/openapi.json": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "responses": {
+          "200": {
+            "description": "The contents of the specification.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "headers": {
+              "X-Api-Version": {
+                "description": "The current version of the API.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/openapi.yaml": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "responses": {
+          "200": {
+            "description": "The contents of the specification.",
+            "content": {
+              "text/yaml": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "headers": {
+              "X-Api-Version": {
+                "description": "The current version of the API.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/url": {
+      "post": {
+        "tags": [
+          "Manage URLs"
+        ],
+        "summary": "Create a new URL",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "full_url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A response with the result data",
+            "headers": {
+              "X-Api-Version": {
+                "description": "The current version of the API.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "hash": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unidentified server error."
+          }
+        }
+      }
+    },
+    "/{hash}": {
+      "get": {
+        "tags": [
+          "Manage URLs"
+        ],
+        "summary": "Fetch URL",
+        "parameters": [
+          {
+            "name": "hash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A response with the result data",
+            "headers": {
+              "X-Api-Version": {
+                "description": "The current version of the API.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "hash": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "307": {
+            "description": "A redirect to the full URL",
+            "headers": {
+              "X-Api-Version": {
+                "description": "The current version of the API.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "description": "The full URL for redirect.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/html": {}
+            }
+          },
+          "500": {
+            "description": "An unidentified server error."
+          }
+        }
+      }
+    }
+  }
+}

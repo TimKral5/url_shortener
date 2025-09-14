@@ -1,0 +1,35 @@
+services:
+  url_shortener:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      SHORTENER_ADDRESS: ':3000'
+      SHORTENER_CACHE: memcached
+      SHORTENER_DATABASE: mongodb
+      SHORTENER_MEMCACHED_URL: memcached:11211
+      SHORTENER_MONGODB_URL: mongodb://root:example@mongodb
+
+  memcached:
+    image: memcached:1.6.39
+    command:
+      - --conn-limit=1024
+      - --memory-limit=64
+      - --threads=5
+
+  mongodb:
+    image: mongo:8.0
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - 3001:8081
