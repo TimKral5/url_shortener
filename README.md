@@ -1,9 +1,21 @@
-# URL Shortener
-[![go.dev badge](https://img.shields.io/badge/language-Go-239120)](https://go.dev)
-[![master last commit badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/master?label=Last%20Commit%20-%20Master)](https://github.com/TimKral5/url_shortener)
-[![development last commit badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/development?label=Last%20Commit%20-%20Development)](https://github.com/TimKral5/url_shortener/tree/development)
+<h1 align="center">URL Shortener</h1>
 
-A simple-to-use URL shortener.
+<div align="center">
+
+![License Information Badge](https://img.shields.io/github/license/timkral5/url_shortener?logo=github&label=License&color=blue)
+![Latest Release Version Badge](https://img.shields.io/github/v/tag/timkral5/url_shortener?logo=github&label=Latest%20Version&color=blue)
+[![Master Last Commit Badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/master?label=Last%20Commit%20-%20Master&logo=git&color=blue)](https://github.com/TimKral5/url_shortener)
+[![Development Last Commit Badge](https://img.shields.io/github/last-commit/timkral5/url_shortener/development?label=Last%20Commit%20-%20Development&logo=git&color=red)](https://github.com/TimKral5/url_shortener/tree/development)
+[![Go Version](https://img.shields.io/badge/Go_Version-1.24.5-deepskyblue?logo=go)](https://go.dev)
+[![Docker Version](https://img.shields.io/badge/Docker_Version-18.3.3-deepskyblue?logo=docker)](https://docker.com)
+![Operating Systems Badge](https://img.shields.io/badge/OS-linux%20%7C%20windows-blue?style=flat&logo=Linux&logoColor=b0c0c0)
+![Architectures Badge](https://img.shields.io/badge/CPU-x86%20%7C%20x86__64%20-blue?style=flat&logo=amd&logoColor=b0c0c0)
+
+</div>
+
+<p align="center">
+  <i>A simple-to-use URL shortener written in Go</i> 😎
+</p>
 
 ## Table of Contents
 
