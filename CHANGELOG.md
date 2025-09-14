@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add cached support for Memcached.
 - Implement unit tests.
 - Implement integration tests.
+- Implement benchmarks.
 - Set up documentation through MkDocs.
 - Implement Docker support.
 - Implement client library for the API.
