@@ -22,28 +22,32 @@ const maxHeaderSize = 4096
 
 // Server is the wrapper for the main HTTP server.
 type Server struct {
-	server         *http.Server
 	Database       database.Connection
 	Cache          cache.Connection
 	Auth           auth.Connection
 	ShortURLLength int
+	APIVersion string
+	server         *http.Server
 }
 
 // NewServer constructs a new shortener API instance.
 func NewServer() *Server {
 	server := &Server{
-		server:         nil,
 		Database:       nil,
 		Cache:          nil,
 		Auth:           nil,
 		ShortURLLength: shortURLDefaultLength,
+		APIVersion: "NULL",
+		server:         nil,
 	}
 
 	return server
 }
 
-// CreateURLRoute creates a new shortened URL.
-func (server *Server) CreateURLRoute(writer http.ResponseWriter, request *http.Request) {
+// AddURLRoute creates a new shortened URL.
+func (server *Server) AddURLRoute(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Add("X-Api-Version", server.APIVersion)
+
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
 		log.Error("Read request body:", err)
@@ -52,33 +56,21 @@ func (server *Server) CreateURLRoute(writer http.ResponseWriter, request *http.R
 		return
 	}
 
-	hash, result := server.createURL(body)
+	hash, result := server.addURL(body)
 	if !result {
 		writer.WriteHeader(http.StatusInternalServerError)
 
 		return
 	}
 
-	response := api.NewEmptyAddURLResponse()
-	response.Hash = hash
-
-	json, err := response.DumpJSON()
-	if err != nil {
-		log.Error("Constructing response:", err)
-		writer.WriteHeader(http.StatusInternalServerError)
-
-		return
-	}
-
-	_, err = writer.Write(json)
-	if err != nil {
-		return
-	}
+	server.handleAddURLResponse(writer, request, hash)
 }
 
 // GetURLRoute fetches a full URL using its shortened ID.
 func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Request) {
-	id := strings.ToUpper(request.URL.Path[1:])
+	id := strings.ToUpper(request.URL.Path[1:])	
+
+	writer.Header().Add("X-Api-Version", server.APIVersion)
 
 	fullURL, result := server.getURL(id)
 	if !result {
@@ -93,7 +85,7 @@ func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Requ
 // SetupRoutes constructs a serve mux and mounts all routes to it.
 func (server *Server) SetupRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /", server.CreateURLRoute)
+	mux.HandleFunc("POST /", server.AddURLRoute)
 	mux.HandleFunc("GET /", server.GetURLRoute)
 
 	return mux
@@ -116,7 +108,7 @@ func (server *Server) trimHash(hash string) string {
 	return hash
 }
 
-func (server *Server) createURL(body []byte) (string, bool) {
+func (server *Server) addURL(body []byte) (string, bool) {
 	requestData := api.NewEmptyAddURLRequest()
 
 	err := requestData.LoadJSON(body)
@@ -137,6 +129,24 @@ func (server *Server) createURL(body []byte) (string, bool) {
 	}
 
 	return hash, true
+}
+
+func (server *Server) handleAddURLResponse(writer http.ResponseWriter, _ *http.Request, hash string) {
+	response := api.NewEmptyAddURLResponse()
+	response.Hash = hash
+
+	json, err := response.DumpJSON()
+	if err != nil {
+		log.Error("Constructing response:", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	_, err = writer.Write(json)
+	if err != nil {
+		return
+	}
 }
 
 func (server *Server) handleGetURLResponse(writer http.ResponseWriter, request *http.Request, url string) {

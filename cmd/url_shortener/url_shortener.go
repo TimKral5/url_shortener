@@ -29,6 +29,7 @@ func main() {
 
 	env := loadEnvironment()
 	server := server.NewServer()
+	server.APIVersion = URLShortenerVersion
 
 	success := setupConnections(server, env)
 	if !success {
