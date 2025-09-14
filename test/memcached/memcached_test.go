@@ -19,6 +19,7 @@ func TestNewMemcachedConnection(t *testing.T) {
 	if err != nil {
 		t.Error("Connection to Memcached failed:")
 		t.Error(err)
+
 		return
 	}
 }

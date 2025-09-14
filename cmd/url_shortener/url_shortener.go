@@ -17,11 +17,11 @@ const urlShortenerDefaultAddress string = ":3000"
 const databaseTimeout time.Duration = 2 * time.Second
 
 type environment struct {
-	Address                 string
-	Database                string
-	Cache                   string
+	Address                   string
+	Database                  string
+	Cache                     string
 	MemcachedConnectionString string
-	MongoDBConnectionString string
+	MongoDBConnectionString   string
 }
 
 func main() {
@@ -46,11 +46,11 @@ func main() {
 
 func loadEnvironment() environment {
 	return environment{
-		Address:                 os.Getenv("SHORTENER_ADDRESS"),
-		Database:                os.Getenv("SHORTENER_DATABASE"),
-		Cache:                   os.Getenv("SHORTENER_CACHE"),
+		Address:                   os.Getenv("SHORTENER_ADDRESS"),
+		Database:                  os.Getenv("SHORTENER_DATABASE"),
+		Cache:                     os.Getenv("SHORTENER_CACHE"),
 		MemcachedConnectionString: os.Getenv("SHORTENER_MEMCACHED_URL"),
-		MongoDBConnectionString: os.Getenv("SHORTENER_MONGODB_URL"),
+		MongoDBConnectionString:   os.Getenv("SHORTENER_MONGODB_URL"),
 	}
 }
 
@@ -77,9 +77,11 @@ func connectToCache(server *server.Server, env environment) bool {
 
 		server.Cache, err = cache.NewMemcachedConnection(env.MemcachedConnectionString)
 		if err != nil {
+			log.Error(err)
 
+			return false
 		}
-		
+
 		log.Log("Connection established.")
 	case "fake":
 		log.Log("Setting up fake cache...")
