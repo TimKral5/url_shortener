@@ -78,7 +78,6 @@ func TestDisconnect(t *testing.T) {
 	}
 }
 
-
 func BenchmarkURLOperations(b *testing.B) {
 	var err error
 

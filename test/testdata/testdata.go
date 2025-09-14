@@ -34,7 +34,6 @@ func ReadStaticTestData() TestData {
 	return data
 }
 
-
 // GenerateTestValues makes use of the given seed to generate a single
 // set of test values.
 func GenerateTestValues(seed int) (string, string) {
@@ -49,7 +48,7 @@ func GenerateTestValues(seed int) (string, string) {
 func GenerateTestData(seed int, size int) TestData {
 	urls := map[string]string{}
 
-	for i := range size {	
+	for i := range size {
 		short, full := GenerateTestValues(seed + i)
 		urls[short] = full
 	}
