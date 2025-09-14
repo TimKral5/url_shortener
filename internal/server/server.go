@@ -26,7 +26,7 @@ type Server struct {
 	Cache          cache.Connection
 	Auth           auth.Connection
 	ShortURLLength int
-	APIVersion string
+	APIVersion     string
 	server         *http.Server
 }
 
@@ -37,7 +37,7 @@ func NewServer() *Server {
 		Cache:          nil,
 		Auth:           nil,
 		ShortURLLength: shortURLDefaultLength,
-		APIVersion: "NULL",
+		APIVersion:     "NULL",
 		server:         nil,
 	}
 
@@ -68,7 +68,7 @@ func (server *Server) AddURLRoute(writer http.ResponseWriter, request *http.Requ
 
 // GetURLRoute fetches a full URL using its shortened ID.
 func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Request) {
-	id := strings.ToUpper(request.URL.Path[1:])	
+	id := strings.ToUpper(request.URL.Path[1:])
 
 	writer.Header().Add("X-Api-Version", server.APIVersion)
 
