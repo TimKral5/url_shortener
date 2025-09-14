@@ -87,20 +87,7 @@ func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Requ
 		return
 	}
 
-	response := api.NewEmptyGetURLResponse()
-	response.URL = fullURL
-
-	json, err := response.DumpJSON()
-	if err != nil {
-		writer.WriteHeader(http.StatusInternalServerError)
-
-		return
-	}
-
-	_, err = writer.Write(json)
-	if err != nil {
-		return
-	}
+	server.handleGetURLResponse(writer, request, fullURL)
 }
 
 // SetupRoutes constructs a serve mux and mounts all routes to it.
@@ -150,6 +137,32 @@ func (server *Server) createURL(body []byte) (string, bool) {
 	}
 
 	return hash, true
+}
+
+func (server *Server) handleGetURLResponse(writer http.ResponseWriter, request *http.Request, url string) {
+	acceptHeader := request.Header.Get("Accept")
+
+	if strings.Contains(acceptHeader, "text/html") {
+		writer.Header().Add("Location", url)
+		writer.WriteHeader(http.StatusTemporaryRedirect)
+
+		return
+	}
+
+	response := api.NewEmptyGetURLResponse()
+	response.URL = url
+
+	json, err := response.DumpJSON()
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	_, err = writer.Write(json)
+	if err != nil {
+		return
+	}
 }
 
 func (server *Server) getURL(hash string) (string, bool) {

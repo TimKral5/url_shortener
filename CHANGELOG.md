@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Implemented RestAPI with environments for configuration.
-- Implemented create route for shortening URLs.
-- Implemented fetch route for retreicing shortened URLs.
+- Implemented create route for shortening URLs (JSON).
+- Implemented fetch route for retreiving shortened URLs (JSON).
+- Implemented fetch route for retreiving shortened URLs (redirect).
 - Implemented logging for all routes.
 - Implemented unit tests.
 - Implemented integration tests.
