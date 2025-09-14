@@ -95,7 +95,7 @@ mkdocs:
 t: test
 test:
 	@#go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
-	-@go test -v -coverprofile "coverage.out" $(GO_MODULES)
+	@go test -v -coverprofile "coverage.out" $(GO_MODULES)
 	-@go tool cover -html "coverage.out" -o "coverage.html"
 
 bm: benchmarks
