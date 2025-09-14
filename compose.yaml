@@ -3,6 +3,12 @@ services:
     build: .
     ports:
       - 3000:3000
+    environment:
+      SHORTENER_ADDRESS: ':3000'
+      SHORTENER_CACHE: memcached
+      SHORTENER_DATABASE: mongodb
+      SHORTENER_MEMCACHED_URL: memcached:11211
+      SHORTENER_MONGODB_URL: mongodb://root:example@mongodb
 
   memcached:
     image: memcached:1.6.39
