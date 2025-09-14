@@ -1,28 +1,24 @@
-// Package main. This package contains several integration tests.
-package main
+package memcached_test
 
 import (
 	"os"
 	"testing"
-	"time"
 
-	"github.com/timkral5/url_shortener/internal/database"
+	"github.com/timkral5/url_shortener/internal/cache"
 	"github.com/timkral5/url_shortener/test/testdata"
 )
 
-const timeout time.Duration = 10 * time.Second
+var conn *cache.MemcachedConnection
 
-var conn *database.MongoDBConnection
-
-func TestNewMongoDBConnection(t *testing.T) {
+func TestNewMemcachedConnection(t *testing.T) {
 	var err error
 
-	connStr := os.Getenv("SHORTENER_MONGODB_URL")
+	connStr := os.Getenv("SHORTENER_MEMCACHED_URL")
 
-	conn, err = database.NewMongoDBConnection(connStr, timeout)
+	conn, err = cache.NewMemcachedConnection(connStr)
 	if err != nil {
-		t.Error("Connection to MongoDB failed:", err)
-
+		t.Error("Connection to Memcached failed:")
+		t.Error(err)
 		return
 	}
 }
@@ -75,7 +71,7 @@ func TestGetURL(t *testing.T) {
 func TestDisconnect(t *testing.T) {
 	err := conn.Disconnect()
 	if err != nil {
-		t.Error("Disconnect from MongoDB failed:", err)
+		t.Error("Disconnect from Memcached failed:", err)
 
 		return
 	}

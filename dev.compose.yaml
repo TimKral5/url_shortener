@@ -5,6 +5,8 @@ services:
       - --conn-limit=1024
       - --memory-limit=64
       - --threads=5
+    ports:
+      - 11211:11211
 
   mongodb:
     image: mongo:8.0

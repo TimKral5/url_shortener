@@ -20,6 +20,7 @@ type environment struct {
 	Address                 string
 	Database                string
 	Cache                   string
+	MemcachedConnectionString string
 	MongoDBConnectionString string
 }
 
@@ -48,6 +49,7 @@ func loadEnvironment() environment {
 		Address:                 os.Getenv("SHORTENER_ADDRESS"),
 		Database:                os.Getenv("SHORTENER_DATABASE"),
 		Cache:                   os.Getenv("SHORTENER_CACHE"),
+		MemcachedConnectionString: os.Getenv("SHORTENER_MEMCACHED_URL"),
 		MongoDBConnectionString: os.Getenv("SHORTENER_MONGODB_URL"),
 	}
 }
@@ -67,7 +69,18 @@ func setupConnections(server *server.Server, env environment) bool {
 }
 
 func connectToCache(server *server.Server, env environment) bool {
+	var err error
+
 	switch env.Cache {
+	case "memcached":
+		log.Log("Connecting to Memcached...")
+
+		server.Cache, err = cache.NewMemcachedConnection(env.MemcachedConnectionString)
+		if err != nil {
+
+		}
+		
+		log.Log("Connection established.")
 	case "fake":
 		log.Log("Setting up fake cache...")
 

@@ -12,12 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented create route for shortening URLs.
 - Implemented fetch route for retreicing shortened URLs.
 - Implemented logging for all routes.
-- Implemented database support for MongoDB.
 - Implemented unit tests.
 - Implemented integration tests.
 - Implemented Docker support.
 - Implemented client library for the API.
 - Set up documentation through MkDocs.
+- Add databaase support for MongoDB.
+- Add cached support for Memcached.
 
 ### Edited
 
