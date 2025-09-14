@@ -14,7 +14,7 @@ import (
 )
 
 const testURL string = "https://example.com"
-const testHash string = "100680AD546CE6A577F42F52DF33B4CFDCA756859E664B8D7DE329B150D09CE9"
+// const testHash string = "100680AD546CE6A577F42F52DF33B4CFDCA756859E664B8D7DE329B150D09CE9"
 
 var server *_server.Server
 var mock *httptest.Server
@@ -34,45 +34,6 @@ func TestAPIEndpoints(t *testing.T) {
 
 	t.Run("TestAddURL", testAddURL)
 	t.Run("TestGetURL", testGetURL)
-}
-
-func BenchmarkGetURL(b *testing.B) {
-	setupBenchmarkEnvironment()
-
-	api := _api.NewClient()
-	api.Bind(mock.URL)
-
-	err := server.Database.AddURL(testHash, testURL)
-	if err != nil {
-		b.Error("Test URL could not be set up.")
-		b.Error(err)
-
-		return
-	}
-
-	for b.Loop() {
-		_, err := api.GetURL(testHash)
-		if err != nil {
-			b.Error("Failed to fetch URL")
-			b.Error(err)
-
-			return
-		}
-	}
-}
-
-func setupBenchmarkEnvironment() {
-	server = _server.NewServer()
-
-	cache.NewFakeCacheConnection()
-
-	server.Database = database.NewFakeDatabaseConnection()
-	server.Cache = cache.NewFakeCacheConnection()
-
-	mock = httptest.NewUnstartedServer(server.SetupRoutes())
-
-	mock.Start()
-	defer mock.Close()
 }
 
 func testAddURL(t *testing.T) {

@@ -96,15 +96,15 @@ t: test
 test:
 	@#go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
 	@go test -v -coverprofile "coverage.out" $(GO_MODULES)
-	-@go tool cover -html "coverage.out" -o "coverage.html"
+	@go tool cover -html "coverage.out" -o "coverage.html"
 
 bm: benchmarks
 benchmarks:
-	-@go test -v -bench=. '-run=^$$' $(GO_MODULES)
+	@set -a; source ./.env; set +a; go test -v -bench=. '-run=^$$' $(GO_MODULES) $(GO_MODULES_TEST)
 
 i: integration
 integration:
-	@set -a; source ./.env; set +a; go test -v -bench=. $(GO_MODULES_TEST)
+	@set -a; source ./.env; set +a; go test -v $(GO_MODULES_TEST)
 
 l: lint
 lint:

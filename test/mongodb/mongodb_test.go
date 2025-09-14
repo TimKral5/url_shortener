@@ -80,3 +80,53 @@ func TestDisconnect(t *testing.T) {
 		return
 	}
 }
+
+func BenchmarkURLOperations(b *testing.B) {
+	var err error
+
+	connStr := os.Getenv("SHORTENER_MONGODB_URL")
+
+	conn, err = database.NewMongoDBConnection(connStr, timeout)
+	if err != nil {
+		b.Fail()
+
+		return
+	}
+
+	runBenchmark(b, conn)
+
+	err = conn.Disconnect()
+	if err != nil {
+		b.Error("Disconnect from Memcached failed:", err)
+
+		return
+	}
+}
+
+func runBenchmark(b *testing.B, conn *database.MongoDBConnection) {
+	b.Helper()
+	b.StopTimer()
+	b.ResetTimer()
+
+	for i := range b.N {
+		hash, url := testdata.GenerateTestValues(i)
+
+		b.StartTimer()
+
+		err := conn.AddURL(hash, url)
+		if err != nil {
+			b.Error(err)
+
+			return
+		}
+
+		_, err = conn.GetURL(hash)
+		if err != nil {
+			b.Error(err)
+
+			return
+		}
+
+		b.StopTimer()
+	}
+}

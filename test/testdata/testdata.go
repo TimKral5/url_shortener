@@ -5,7 +5,9 @@ package testdata
 import (
 	_ "embed"
 	"encoding/json"
+	"strconv"
 
+	"github.com/timkral5/url_shortener/internal/hash"
 	"github.com/timkral5/url_shortener/internal/log"
 )
 
@@ -30,4 +32,29 @@ func ReadStaticTestData() TestData {
 	}
 
 	return data
+}
+
+
+// GenerateTestValues makes use of the given seed to generate a single
+// set of test values.
+func GenerateTestValues(seed int) (string, string) {
+	full := hash.GenerateSHA256Hex(strconv.Itoa(seed))
+	short := hash.GenerateSHA256Hex(full)
+
+	return short, full
+}
+
+// GenerateTestData makes use of the given seed to generate a set
+// of testing data.
+func GenerateTestData(seed int, size int) TestData {
+	urls := map[string]string{}
+
+	for i := range size {	
+		short, full := GenerateTestValues(seed + i)
+		urls[short] = full
+	}
+
+	return TestData{
+		TestURLs: urls,
+	}
 }
