@@ -136,7 +136,7 @@ func (api *Client) setupAddURLRequest(url string) (*http.Request, error) {
 	httpRequest, err := http.NewRequestWithContext(
 		context.Background(),
 		http.MethodPost,
-		api.baseURL,
+		api.baseURL + "/v0/url",
 		bytes.NewBuffer(requestBytes),
 	)
 	if err != nil {

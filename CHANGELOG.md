@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement create route for shortening URLs (JSON).
 - Implement fetch route for retreiving shortened URLs (JSON).
 - Implement fetch route for retreiving shortened URLs (redirect).
+- Add route for openapi specification (JSON/YAML)
 - Implement logging for all routes.
 - Add database support for MongoDB.
 - Add cached support for Memcached.

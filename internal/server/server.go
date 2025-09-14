@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	apidocs "github.com/timkral5/url_shortener/api"
 	"github.com/timkral5/url_shortener/internal/auth"
 	"github.com/timkral5/url_shortener/internal/cache"
 	"github.com/timkral5/url_shortener/internal/database"
@@ -44,6 +45,16 @@ func NewServer() *Server {
 	return server
 }
 
+// SetupRoutes constructs a serve mux and mounts all routes to it.
+func (server *Server) SetupRoutes() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /v0/url", server.AddURLRoute)
+	mux.HandleFunc("GET /v0/{file}", server.ServeDocsRoute)
+	mux.HandleFunc("GET /{hash}", server.GetURLRoute)
+
+	return mux
+}
+
 // AddURLRoute creates a new shortened URL.
 func (server *Server) AddURLRoute(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Add("X-Api-Version", server.APIVersion)
@@ -68,7 +79,7 @@ func (server *Server) AddURLRoute(writer http.ResponseWriter, request *http.Requ
 
 // GetURLRoute fetches a full URL using its shortened ID.
 func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Request) {
-	id := strings.ToUpper(request.URL.Path[1:])
+	id := request.PathValue("hash")
 
 	writer.Header().Add("X-Api-Version", server.APIVersion)
 
@@ -82,13 +93,21 @@ func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Requ
 	server.handleGetURLResponse(writer, request, fullURL)
 }
 
-// SetupRoutes constructs a serve mux and mounts all routes to it.
-func (server *Server) SetupRoutes() *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("POST /", server.AddURLRoute)
-	mux.HandleFunc("GET /", server.GetURLRoute)
+func (server *Server) ServeDocsRoute(writer http.ResponseWriter, request *http.Request) {
+	file := request.PathValue("file")
 
-	return mux
+	writer.Header().Add("X-Api-Version", server.APIVersion)
+
+	switch file {
+	case "openapi.json":
+		writer.Header().Add("Content-Type", "application/json")
+		writer.Write([]byte(apidocs.JSONOpenAPISpecs))
+	case "openapi.yaml":
+		writer.Header().Add("Content-Type", "text/yaml")
+		writer.Write([]byte(apidocs.YAMLOpenAPISpecs))
+	default:
+		writer.WriteHeader(http.StatusNotFound)
+	}
 }
 
 // Listen launches the HTTP server under the given address.
@@ -135,6 +154,8 @@ func (server *Server) handleAddURLResponse(writer http.ResponseWriter, _ *http.R
 	response := api.NewEmptyAddURLResponse()
 	response.Hash = hash
 
+	writer.Header().Add("Content-Type", "application/json")
+
 	json, err := response.DumpJSON()
 	if err != nil {
 		log.Error("Constructing response:", err)
@@ -153,6 +174,7 @@ func (server *Server) handleGetURLResponse(writer http.ResponseWriter, request *
 	acceptHeader := request.Header.Get("Accept")
 
 	if strings.Contains(acceptHeader, "text/html") {
+		writer.Header().Add("Content-Type", "text/html")
 		writer.Header().Add("Location", url)
 		writer.WriteHeader(http.StatusTemporaryRedirect)
 
@@ -168,6 +190,8 @@ func (server *Server) handleGetURLResponse(writer http.ResponseWriter, request *
 
 		return
 	}
+
+	writer.Header().Add("Content-Type", "application/json")
 
 	_, err = writer.Write(json)
 	if err != nil {
