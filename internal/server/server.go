@@ -93,7 +93,10 @@ func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Requ
 	server.handleGetURLResponse(writer, request, fullURL)
 }
 
+// ServeDocsRoute serves the documetnation for the API.
 func (server *Server) ServeDocsRoute(writer http.ResponseWriter, request *http.Request) {
+	var err error
+
 	file := request.PathValue("file")
 
 	writer.Header().Add("X-Api-Version", server.APIVersion)
@@ -101,12 +104,16 @@ func (server *Server) ServeDocsRoute(writer http.ResponseWriter, request *http.R
 	switch file {
 	case "openapi.json":
 		writer.Header().Add("Content-Type", "application/json")
-		writer.Write([]byte(apidocs.JSONOpenAPISpecs))
+		_, err = writer.Write([]byte(apidocs.JSONOpenAPISpecs))
 	case "openapi.yaml":
 		writer.Header().Add("Content-Type", "text/yaml")
-		writer.Write([]byte(apidocs.YAMLOpenAPISpecs))
+		_, err = writer.Write([]byte(apidocs.YAMLOpenAPISpecs))
 	default:
 		writer.WriteHeader(http.StatusNotFound)
+	}
+
+	if err != nil {
+		log.Error("Request failed:", err)
 	}
 }
 
@@ -166,7 +173,7 @@ func (server *Server) handleAddURLResponse(writer http.ResponseWriter, _ *http.R
 
 	_, err = writer.Write(json)
 	if err != nil {
-		return
+		log.Error("Request failed:", err)
 	}
 }
 
@@ -195,7 +202,7 @@ func (server *Server) handleGetURLResponse(writer http.ResponseWriter, request *
 
 	_, err = writer.Write(json)
 	if err != nil {
-		return
+		log.Error("Request failed:", err)
 	}
 }
 
