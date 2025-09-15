@@ -1,4 +1,4 @@
-docker="docker run --rm -u 1000:1000 -v $PWD:/local openapitools/openapi-generator-cli"
+docker="docker run --rm -u $(id -u):$(id -g) -v $PWD:/local openapitools/openapi-generator-cli:v7.15.0"
 
 yq . openapi.yaml > openapi.json
 $docker generate -i /local/openapi.yaml -g go -o /local/build/go
