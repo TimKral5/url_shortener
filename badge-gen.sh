@@ -42,7 +42,7 @@ done
 
 # Version info
 echo "[![Go Version](https://img.shields.io/badge/Go_Version-$go_version-deepskyblue?logo=go)](https://go.dev)"
-echo "[![Docker Version](https://img.shields.io/badge/Docker_Version-$go_version-deepskyblue?logo=docker)](https://docker.com)"
+echo "[![Docker Version](https://img.shields.io/badge/Docker_Version-$docker_version-deepskyblue?logo=docker)](https://docker.com)"
 
 # Compatibility information
 echo "![Operating Systems Badge](https://img.shields.io/badge/OS-linux%20%7C%20windows-blue?style=flat&logo=Linux&logoColor=b0c0c0)"

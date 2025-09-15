@@ -15,7 +15,7 @@
 ![Master Last Commit](https://img.shields.io/github/last-commit/timkral5/url_shortener/master?logo=git&color=blue&label=Last%20Commit%20-%20Master)
 ![Development Last Commit](https://img.shields.io/github/last-commit/timkral5/url_shortener/development?logo=git&color=red&label=Last%20Commit%20-%20Development)
 [![Go Version](https://img.shields.io/badge/Go_Version-1.24.5-deepskyblue?logo=go)](https://go.dev)
-[![Docker Version](https://img.shields.io/badge/Docker_Version-1.24.5-deepskyblue?logo=docker)](https://docker.com)
+[![Docker Version](https://img.shields.io/badge/Docker_Version-28.3.3-deepskyblue?logo=docker)](https://docker.com)
 ![Operating Systems Badge](https://img.shields.io/badge/OS-linux%20%7C%20windows-blue?style=flat&logo=Linux&logoColor=b0c0c0)
 ![Architectures Badge](https://img.shields.io/badge/CPU-x86%20%7C%20x86__64%20-blue?style=flat&logo=amd&logoColor=b0c0c0)
 

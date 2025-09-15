@@ -9,21 +9,60 @@
     }
   },
   "paths": {
+    "/v0/docs.html": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "summary": "API Documentation",
+        "operationId": "GetDocs",
+        "responses": {
+          "200": {
+            "description": "The contents of the specification.",
+            "headers": {
+              "X-Api-Version": {
+                "description": "The current version of the API.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/refs.html": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "summary": "Client API Documentation",
+        "operationId": "GetRefs",
+        "responses": {
+          "200": {
+            "description": "The contents of the specification.",
+            "headers": {
+              "X-Api-Version": {
+                "description": "The current version of the API.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v0/openapi.json": {
       "get": {
         "tags": [
           "Documentation"
         ],
+        "summary": "OpenAPI Specification",
+        "operationId": "GetSpecsJSON",
         "responses": {
           "200": {
             "description": "The contents of the specification.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            },
             "headers": {
               "X-Api-Version": {
                 "description": "The current version of the API.",
@@ -41,16 +80,11 @@
         "tags": [
           "Documentation"
         ],
+        "summary": "OpenAPI Specification",
+        "operationId": "GetSpecsYAML",
         "responses": {
           "200": {
             "description": "The contents of the specification.",
-            "content": {
-              "text/yaml": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            },
             "headers": {
               "X-Api-Version": {
                 "description": "The current version of the API.",
@@ -69,6 +103,7 @@
           "Manage URLs"
         ],
         "summary": "Create a new URL",
+        "operationId": "CreateURL",
         "requestBody": {
           "content": {
             "application/json": {
@@ -118,6 +153,7 @@
           "Manage URLs"
         ],
         "summary": "Fetch URL",
+        "operationId": "GetURL",
         "parameters": [
           {
             "name": "hash",

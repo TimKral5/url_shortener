@@ -108,6 +108,12 @@ func (server *Server) ServeDocsRoute(writer http.ResponseWriter, request *http.R
 	case "openapi.yaml":
 		writer.Header().Add("Content-Type", "text/yaml")
 		_, err = writer.Write([]byte(apidocs.YAMLOpenAPISpecs))
+	case "docs", "docs.html", "index.html":
+		writer.Header().Add("Content-Type", "text/html")
+		_, err = writer.Write([]byte(apidocs.HTMLOpenAPIDocs))
+	case "refs", "refs.html":
+		writer.Header().Add("Content-Type", "text/html")
+		_, err = writer.Write([]byte(apidocs.HTMLOpenAPIRefs))
 	default:
 		writer.WriteHeader(http.StatusNotFound)
 	}

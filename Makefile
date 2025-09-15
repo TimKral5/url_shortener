@@ -42,7 +42,7 @@ help:
 
 .PHONY: \
 	h help \
-	c clean \
+	c clean _clean \
 	b build \
 	bd docker-build \
 	cu compose-up \
@@ -62,10 +62,20 @@ help:
 _clean:
 	@echo -e '\033[0;33m== Cleanup Script ==\033[0m'
 c: clean
-clean: _clean _url_shortener _coverage.html _coverage.out
+clean:
+	@# Files
+	@export file='url_shortener-linux-386'; [ -f "$$file" ] && rm "$$file" && echo "removed $$file";:
+	@export file='url_shortener-linux-amd64'; [ -f "$$file" ] && rm "$$file" && echo "removed $$file";:
+	@export file='url_shortener-windows-386.exe'; [ -f "$$file" ] && rm "$$file" && echo "removed $$file";:
+	@export file='url_shortener-windows-amd64.exe'; [ -f "$$file" ] && rm "$$file" && echo "removed $$file";:
+	@export file='coverage.html'; [ -f "$$file" ] && rm "$$file" && echo "removed $$file";:
+	@export file='coverage.out'; [ -f "$$file" ] && rm "$$file" && echo "removed $$file";:
+
+	@# Directories
+	@export file='./api/build'; [ -d "$$file" ] && rm -rf "$$file" && echo "removed $$file";:
 
 b: build
-build:
+build: api/build/
 	env GOOS=linux GOARCH=386 go build ./cmd/url_shortener; mv url_shortener url_shortener-linux-386
 	env GOOS=linux GOARCH=amd64 go build ./cmd/url_shortener; mv url_shortener url_shortener-linux-amd64
 	env GOOS=windows GOARCH=386 go build ./cmd/url_shortener; mv url_shortener.exe url_shortener-windows-386.exe
@@ -93,21 +103,21 @@ mkdocs:
 	@mkdocs serve -a 0.0.0.0:3005
 
 t: test
-test:
+test: api/build/
 	@#go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
 	@go test -v -coverprofile "coverage.out" $(GO_MODULES)
 	@go tool cover -html "coverage.out" -o "coverage.html"
 
 bm: benchmarks
-benchmarks:
+benchmarks: api/build/
 	@set -a; source ./.env; set +a; go test -v -bench=. '-run=^$$' $(GO_MODULES) $(GO_MODULES_TEST)
 
 i: integration
-integration:
+integration: api/build/
 	@set -a; source ./.env; set +a; go test -v $(GO_MODULES_TEST)
 
 l: lint
-lint:
+lint: api/build/
 	golangci-lint run
 
 f: format
@@ -119,7 +129,7 @@ format:
 	done
 	@echo 'done.'
 
-r: run
+r: api/build/ run
 run:
 	@set -a; source ./.env; set +a; go run ./cmd/url_shortener
 
@@ -139,9 +149,5 @@ stats:
 	@echo "   Go: $$(git ls-files | grep .go\$$ | xargs wc -l | grep total | xargs | cut -d ' ' -f 1) lines"
 	@echo "   Markdown: $$(git ls-files | grep .md\$$ | xargs wc -l | grep total | xargs | cut -d ' ' -f 1) lines"
 
-_url_shortener _coverage.html _coverage.out:
-	@printf "\033[0;34mTrying to remove the $(RM_TARGET) executable...\033[0m "
-	@[ ! -f "$(RM_TARGET)" ] &&\
-		echo -e '\033[0;31malready removed.\033[0m';:
-	@[ -f "$(RM_TARGET)" ] &&\
-		rm "$(RM_TARGET)" && echo -e '\033[0;32mdone.\033[0m';:
+api/build/:
+	cd api;./generate.sh
