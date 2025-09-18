@@ -14,7 +14,7 @@ linters:
             - $gostd
             - github.com/timkral5
             - go.mongodb.org/mongo-driver/v2
-            - github.com/bradfitz/gomemcache
+            - github.com/bradfitz/gomemcache/memcache
     funlen:
       lines: 30
     tagliatelle:

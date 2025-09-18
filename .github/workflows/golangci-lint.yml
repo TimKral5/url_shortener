@@ -20,7 +20,16 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: stable
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
+      - name: install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | \
+          sh -s -- -b $(go env GOPATH)/bin v2.4.0
+      - name: create stub files
+        run: |
+          mkdir api/build; \
+          mkdir api/build/html; \
+          touch api/build/html/index.html; \
+          mkdir api/build/html2; \
+          touch api/build/html2/index.html
+      - name: run linter
+        run: make l

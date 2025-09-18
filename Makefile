@@ -57,7 +57,8 @@ help:
 	r run \
 	du dev-up \
 	dd dev-down \
-	s stats
+	s stats \
+	build-deps
 
 _clean:
 	@echo -e '\033[0;33m== Cleanup Script ==\033[0m'
@@ -75,7 +76,7 @@ clean:
 	@export file='./api/build'; [ -d "$$file" ] && rm -rf "$$file" && echo "removed $$file";:
 
 b: build
-build: api/build/
+build: build-deps
 	env GOOS=linux GOARCH=386 go build ./cmd/url_shortener; mv url_shortener url_shortener-linux-386
 	env GOOS=linux GOARCH=amd64 go build ./cmd/url_shortener; mv url_shortener url_shortener-linux-amd64
 	env GOOS=windows GOARCH=386 go build ./cmd/url_shortener; mv url_shortener.exe url_shortener-windows-386.exe
@@ -103,22 +104,22 @@ mkdocs:
 	@mkdocs serve -a 0.0.0.0:3005
 
 t: test
-test: api/build/
+test: build-deps
 	@#go test -v -bench=. -coverprofile "coverage.out" $(GO_MODULES)
 	@go test -v -coverprofile "coverage.out" $(GO_MODULES)
 	@go tool cover -html "coverage.out" -o "coverage.html"
 
 bm: benchmarks
-benchmarks: api/build/
+benchmarks: build-deps
 	@set -a; source ./.env; set +a; go test -v -bench=. '-run=^$$' $(GO_MODULES) $(GO_MODULES_TEST)
 
 i: integration
-integration: api/build/
+integration: build-deps
 	@set -a; source ./.env; set +a; go test -v $(GO_MODULES_TEST)
 
 l: lint
 lint: api/build/
-	golangci-lint run
+	golangci-lint run ./...
 
 f: format
 format:
@@ -148,6 +149,8 @@ stats:
 	@echo "Languages:"
 	@echo "   Go: $$(git ls-files | grep .go\$$ | xargs wc -l | grep total | xargs | cut -d ' ' -f 1) lines"
 	@echo "   Markdown: $$(git ls-files | grep .md\$$ | xargs wc -l | grep total | xargs | cut -d ' ' -f 1) lines"
+
+build-deps: api/build/
 
 api/build/:
 	cd api;./generate.sh
