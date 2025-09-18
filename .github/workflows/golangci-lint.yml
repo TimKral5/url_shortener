@@ -32,4 +32,4 @@ jobs:
           mkdir api/build/html2; \
           touch api/build/html2/index.html
       - name: run linter
-        run: make l
+        run: make lint
