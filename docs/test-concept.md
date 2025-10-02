@@ -76,16 +76,20 @@ manually.
 - [ ] 2.3. The endpoints should be accessible through JWT or cookies
   with the user credentials and permissions that were configured.
 
-- [ ] 3.1.
-- [ ] 3.2.
+- [ ] 3.1. Memcached should be up and running. The connection should
+  be up and all operations should work as intended.
+- [ ] 3.2. The cache system should be disabled and data should be
+  fetched directly from database instead.
 
-- [ ] 4.1.
-- [ ] 4.2.
+- [ ] 4.1. MongoDB and all interactions with the database should work
+  as intended.
+- [ ] 4.2. MariaDB and all interactions with the database should work
+  as intended.
 
 ## Test Deliverables
 
 Testing is fundamentally done using **Go**'s `go test`. However,
-system could, in the future, be done through shell scripts.
+system tests could, in the future, be done through shell scripts.
 
 ## Testing Tasks
 
