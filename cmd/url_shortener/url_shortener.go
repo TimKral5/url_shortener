@@ -91,9 +91,10 @@ func connectToCache(server *server.Server, env environment) bool {
 
 		log.Log("Cache set up.")
 	default:
-		log.Error("No cache configured (environment variable SHORTENER_CACHE).")
+		log.Log(
+			"No cache configured (environment variable SHORTENER_CACHE). Disabling cache.")
 
-		return false
+		server.Cache = nil
 	}
 
 	return true

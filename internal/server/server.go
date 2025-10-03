@@ -213,22 +213,28 @@ func (server *Server) handleGetURLResponse(writer http.ResponseWriter, request *
 }
 
 func (server *Server) getURL(hash string) (string, bool) {
+	var err error
+
+	var fullURL string
+
 	hash = server.trimHash(hash)
 
-	fullURL, err := server.Cache.GetURL(hash)
-	if err == nil {
-		return fullURL, true
-	}
-
-	fullURL, err = server.Database.GetURL(hash)
-	if err == nil {
+	if server.Cache != nil {
+		fullURL, err = server.Cache.GetURL(hash)
+		if err == nil {
+			return fullURL, true
+		}
+		
 		err = server.Cache.AddURL(hash, fullURL)
 		if err != nil {
 			log.Error("Failed to add URL to cache:", err)
 
 			return "", false
 		}
+	}
 
+	fullURL, err = server.Database.GetURL(hash)
+	if err == nil {
 		return fullURL, true
 	}
 
