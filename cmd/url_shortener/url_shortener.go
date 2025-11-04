@@ -6,8 +6,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/timkral5/url_shortener/internal/auth"
 	"github.com/timkral5/url_shortener/internal/cache"
 	"github.com/timkral5/url_shortener/internal/database"
+	"github.com/timkral5/url_shortener/internal/jwt"
 	"github.com/timkral5/url_shortener/internal/log"
 	"github.com/timkral5/url_shortener/internal/server"
 )
@@ -18,8 +20,11 @@ const databaseTimeout time.Duration = 2 * time.Second
 
 type environment struct {
 	Address                   string
+	Authentication            string
 	Database                  string
 	Cache                     string
+	StaticToken               string
+	JWTSigningKey             string
 	MemcachedConnectionString string
 	MongoDBConnectionString   string
 }
@@ -41,6 +46,8 @@ func main() {
 		address = env.Address
 	}
 
+	server.JWTHandler = jwt.NewHandler("HelloWorld")
+
 	log.Log("Listening on", address)
 	server.Listen(address)
 }
@@ -48,15 +55,23 @@ func main() {
 func loadEnvironment() environment {
 	return environment{
 		Address:                   os.Getenv("SHORTENER_ADDRESS"),
+		Authentication:            os.Getenv("SHORTENER_AUTH"),
 		Database:                  os.Getenv("SHORTENER_DATABASE"),
 		Cache:                     os.Getenv("SHORTENER_CACHE"),
+		StaticToken:               os.Getenv("SHORTENER_STATIC_TOKEN"),
+		JWTSigningKey:             os.Getenv("SHORTENER_JWT_KEY"),
 		MemcachedConnectionString: os.Getenv("SHORTENER_MEMCACHED_URL"),
 		MongoDBConnectionString:   os.Getenv("SHORTENER_MONGODB_URL"),
 	}
 }
 
 func setupConnections(server *server.Server, env environment) bool {
-	success := connectToCache(server, env)
+	success := setupAuthentication(server, env)
+	if !success {
+		return success
+	}
+
+	success = connectToCache(server, env)
 	if !success {
 		return success
 	}
@@ -64,6 +79,18 @@ func setupConnections(server *server.Server, env environment) bool {
 	success = connectToDatabase(server, env)
 	if !success {
 		return success
+	}
+
+	return true
+}
+
+func setupAuthentication(server *server.Server, env environment) bool {
+	// var err error
+	switch env.Authentication {
+	case "static":
+		server.Auth = auth.NewStaticAuth(env.StaticToken)
+	default:
+		server.Auth = nil
 	}
 
 	return true

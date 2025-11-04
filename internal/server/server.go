@@ -3,6 +3,7 @@
 package server
 
 import (
+	"encoding/base64"
 	"io"
 	"net/http"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/timkral5/url_shortener/internal/cache"
 	"github.com/timkral5/url_shortener/internal/database"
 	"github.com/timkral5/url_shortener/internal/hash"
+	"github.com/timkral5/url_shortener/internal/jwt"
 	"github.com/timkral5/url_shortener/internal/log"
 	"github.com/timkral5/url_shortener/pkg/api"
 )
@@ -20,6 +22,7 @@ import (
 const shortURLDefaultLength int = 10
 const requestTimeout time.Duration = 10 * time.Second
 const maxHeaderSize = 4096
+const authHeaderArrLen = 2
 
 // Server is the wrapper for the main HTTP server.
 type Server struct {
@@ -28,6 +31,7 @@ type Server struct {
 	Auth           auth.Connection
 	ShortURLLength int
 	APIVersion     string
+	JWTHandler     *jwt.Handler
 	server         *http.Server
 }
 
@@ -39,6 +43,7 @@ func NewServer() *Server {
 		Auth:           nil,
 		ShortURLLength: shortURLDefaultLength,
 		APIVersion:     "NULL",
+		JWTHandler:     nil,
 		server:         nil,
 	}
 
@@ -46,18 +51,64 @@ func NewServer() *Server {
 }
 
 // SetupRoutes constructs a serve mux and mounts all routes to it.
-func (server *Server) SetupRoutes() *http.ServeMux {
+func (server *Server) SetupRoutes() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /v0/jwt", server.CreateJWTTokenRoute)
 	mux.HandleFunc("POST /v0/url", server.AddURLRoute)
 	mux.HandleFunc("GET /v0/{file}", server.ServeDocsRoute)
 	mux.HandleFunc("GET /{hash}", server.GetURLRoute)
 
-	return mux
+	return server.JWTHandler.Middleware(mux)
+}
+
+// CreateJWTTokenRoute creates a new JSON web-token and returns it.
+func (server *Server) CreateJWTTokenRoute(writer http.ResponseWriter, request *http.Request) {
+	if server.JWTHandler == nil {
+		writer.WriteHeader(http.StatusNotImplemented)
+
+		return
+	}
+
+	rawAuthHeader := request.Header.Get("Authorization")
+	username, password, succeeded := server.parseAuthHeader(rawAuthHeader)
+
+	if !succeeded {
+		writer.WriteHeader(http.StatusBadRequest)
+
+		return
+	}
+
+	credsValid, _ := server.Auth.ValidateCredentials(username, password)
+
+	if !credsValid {
+		writer.WriteHeader(http.StatusUnauthorized)
+
+		return
+	}
+
+	token := server.JWTHandler.GenerateToken(username)
+
+	_, err := writer.Write([]byte(token))
+	if err != nil {
+		log.Error(err)
+	}
 }
 
 // AddURLRoute creates a new shortened URL.
 func (server *Server) AddURLRoute(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Add("X-Api-Version", server.APIVersion)
+
+	if server.Auth != nil {
+		identity := request.Header.Get("L-Identity")
+		if identity == "" {
+			writer.WriteHeader(http.StatusUnauthorized)
+		}
+
+		hasPermission, _ := server.Auth.HasAnyPermission(identity, []string{"add_url"})
+		if !hasPermission {
+			writer.WriteHeader(http.StatusForbidden)
+		}
+	}
 
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
@@ -79,11 +130,21 @@ func (server *Server) AddURLRoute(writer http.ResponseWriter, request *http.Requ
 
 // GetURLRoute fetches a full URL using its shortened ID.
 func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Request) {
-	id := request.PathValue("hash")
+	hash := request.PathValue("hash")
 
-	writer.Header().Add("X-Api-Version", server.APIVersion)
+	if server.Auth != nil {
+		identity := request.Header.Get("L-Identity")
+		if identity == "" {
+			writer.WriteHeader(http.StatusUnauthorized)
+		}
 
-	fullURL, result := server.getURL(id)
+		hasPermission, _ := server.Auth.HasAnyPermission(identity, []string{"get_url"})
+		if !hasPermission {
+			writer.WriteHeader(http.StatusForbidden)
+		}
+	}
+
+	fullURL, result := server.getURL(hash)
 	if !result {
 		writer.WriteHeader(http.StatusInternalServerError)
 
@@ -224,7 +285,16 @@ func (server *Server) getURL(hash string) (string, bool) {
 		if err == nil {
 			return fullURL, true
 		}
-		
+	}
+
+	fullURL, err = server.Database.GetURL(hash)
+	if err != nil {
+		log.Error("Failed to fetch URL from database:", err)
+
+		return "", false
+	}
+
+	if server.Cache != nil {
 		err = server.Cache.AddURL(hash, fullURL)
 		if err != nil {
 			log.Error("Failed to add URL to cache:", err)
@@ -233,14 +303,7 @@ func (server *Server) getURL(hash string) (string, bool) {
 		}
 	}
 
-	fullURL, err = server.Database.GetURL(hash)
-	if err == nil {
-		return fullURL, true
-	}
-
-	log.Error("Failed to fetch URL from database:", err)
-
-	return "", false
+	return fullURL, true
 }
 
 func (server *Server) configureServer(addr string) {
@@ -262,4 +325,24 @@ func (server *Server) configureServer(addr string) {
 		HTTP2:                        nil,
 		Protocols:                    nil,
 	}
+}
+
+func (server *Server) parseAuthHeader(authHeader string) (string, string, bool) {
+	authHeaderBuffer, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(authHeader, "Basic "))
+	if err != nil {
+		log.Error(err)
+
+		return "", "", false
+	}
+
+	authHeaderArr := strings.Split(string(authHeaderBuffer), ":")
+
+	if len(authHeaderArr) < authHeaderArrLen {
+		return "", "", false
+	}
+
+	username := authHeaderArr[0]
+	password := authHeaderArr[1]
+
+	return username, password, true
 }

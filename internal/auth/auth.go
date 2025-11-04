@@ -11,8 +11,10 @@ type Error struct {
 // Connection is an interface all implementations of an auth database
 // wrapper have to comply with.
 type Connection interface {
-	Connect(connStr string) error
-	Disconnect() error
+	ValidateCredentials(user string, pass string) (bool, error)
+	GetPermissions(user string) ([]string, error)
+	HasAnyPermission(user string, permissions []string) (bool, error)
+	HasAllPermissions(user string, permissions []string) (bool, error)
 }
 
 // Error returns the error message.

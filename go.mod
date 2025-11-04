@@ -4,6 +4,7 @@ go 1.24.5
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20250403215159-8d39553ac7cf
+	github.com/golang-jwt/jwt/v5 v5.3.0
 	go.mongodb.org/mongo-driver/v2 v2.3.0
 )
 
