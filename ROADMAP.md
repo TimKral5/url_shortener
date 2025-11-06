@@ -8,11 +8,11 @@ milestones of the URL Shortener project.
 ### Milestone Summary
 
 - [x] Implement Documentation for the API (4/4)
-- [ ] Implement Configurability (1/4)
-- [ ] Implement Cache Compatibility (1/3)
+- [ ] Implement configurability (1/4)
+- [ ] Implement cache Compatibility (2/3)
 - [ ] Implement CRUD Operations for the URLs (3/7)
-- [ ] Implement Database Compatibility (1/3)
-- [ ] Implement API Authentication (0/5)
+- [ ] Implement database compatibility (1/3)
+- [ ] Implement API authentication (2/6)
 
 ### Implement Documentation for the API
 
@@ -31,7 +31,7 @@ milestones of the URL Shortener project.
 ### Implement Cache Compatibility
 
 - [x] Implement Memcached compatibility
-- [ ] Allow disabling of the cache
+- [x] Allow disabling of the cache
 - [ ] Implement internal cache
 
 ### Implement CRUD operations for the URLs
@@ -53,8 +53,9 @@ milestones of the URL Shortener project.
 ### Implement API Authentication
 
 - [ ] Implement LDAP compatibility
-- [ ] Implement JWT authentication
-- [ ] Implement Cookie authentication
+- [x] Implement JWT authentication
+- [ ] Implement cookie authentication
 - [ ] Implement authentication from database
 - [ ] Allow disabling of authentication
+- [x] Allow Static Token authentication
 
