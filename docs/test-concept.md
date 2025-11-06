@@ -22,20 +22,20 @@ access, redirect the user to the desired destination.
 
 ## Features to be tested
 
-- [ ] 1. API Endpoints:
-    - [ ] 1. Fetching Documentation (JSON/YAML/HTML1/HTML2)
-    - [ ] 2. Shortening URL (JSON)
-    - [ ] 3. Fetching URL (JSON)
-    - [ ] 4. Performing Redirect (HTTP status)
-- [ ] 2. Authentication Interfaces
-    - [ ] 1. Auth-less implementation
-    - [ ] 2. Single-token implementation
-    - [ ] 3. LDAP implementation (JWT/Cookies)
-- [ ] 3. Cache Interfaces
-    - [ ] 1. Memcached implementation
-    - [ ] 2. Cache-less implementation
+- [x] 1. API Endpoints:
+    - [x] 1. Fetching Documentation (JSON/YAML/HTML1/HTML2)
+    - [x] 2. Shortening URL (JSON)
+    - [x] 3. Fetching URL (JSON)
+    - [x] 4. Performing Redirect (HTTP status)
+- [x] 2. Authentication Interfaces
+    - [x] 1. Auth-less implementation
+    - [-] 2. Single-token implementation
+    - [x] 3. LDAP implementation (JWT/Cookies)
+- [x] 3. Cache Interfaces
+    - [x] 1. Memcached implementation
+    - [x] 2. Cache-less implementation
 - [ ] 4. Database Interfaces
-    - [ ] 1. MongoDB implementation
+    - [x] 1. MongoDB implementation
     - [ ] 2. MariaDB implementation
 
 ## Features not to be tested
@@ -61,27 +61,27 @@ manually.
 
 ## Item pass/fail criteria
 
-- [ ] 1.1. The documentation should be accessible and show the right
+- [x] 1.1. The documentation should be accessible and show the right
   content.
-- [ ] 1.2. The endpoint should be accessible and the response should
+- [x] 1.2. The endpoint should be accessible and the response should
   contain the hash generated to access the full URL.
-- [ ] 1.3. The endpoint should be accessible and the response should
+- [x] 1.3. The endpoint should be accessible and the response should
   contain the full URL or the hash.
-- [ ] 1.4. The endpoint should be accessible and the response should
+- [x] 1.4. The endpoint should be accessible and the response should
   perform a redirect through a HTTP 3xx redirect.
 
-- [ ] 2.1. The endpoints should be accessible without restrictions.
-- [ ] 2.2. The endpoints should only be accessible through providing
+- [x] 2.1. The endpoints should be accessible without restrictions.
+- [-] 2.2. The endpoints should only be accessible through providing
   the configured token.
-- [ ] 2.3. The endpoints should be accessible through JWT or cookies
+- [x] 2.3. The endpoints should be accessible through JWT or cookies
   with the user credentials and permissions that were configured.
 
-- [ ] 3.1. Memcached should be up and running. The connection should
+- [x] 3.1. Memcached should be up and running. The connection should
   be up and all operations should work as intended.
-- [ ] 3.2. The cache system should be disabled and data should be
+- [x] 3.2. The cache system should be disabled and data should be
   fetched directly from database instead.
 
-- [ ] 4.1. MongoDB and all interactions with the database should work
+- [x] 4.1. MongoDB and all interactions with the database should work
   as intended.
 - [ ] 4.2. MariaDB and all interactions with the database should work
   as intended.
