@@ -132,18 +132,6 @@ func (server *Server) AddURLRoute(writer http.ResponseWriter, request *http.Requ
 func (server *Server) GetURLRoute(writer http.ResponseWriter, request *http.Request) {
 	hash := request.PathValue("hash")
 
-	if server.Auth != nil {
-		identity := request.Header.Get("L-Identity")
-		if identity == "" {
-			writer.WriteHeader(http.StatusUnauthorized)
-		}
-
-		hasPermission, _ := server.Auth.HasAnyPermission(identity, []string{"get_url"})
-		if !hasPermission {
-			writer.WriteHeader(http.StatusForbidden)
-		}
-	}
-
 	fullURL, result := server.getURL(hash)
 	if !result {
 		writer.WriteHeader(http.StatusInternalServerError)
